@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRF 2026 Scheduler - 管理者マニュアル</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #334155;
+            bg-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        h1 {
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        h2 {
+            color: #4f46e5;
+            margin-top: 40px;
+            border-left: 5px solid #4f46e5;
+            padding-left: 15px;
+            font-size: 20px;
+        }
+
+        h3 {
+            color: #334155;
+            margin-top: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .step {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: #4f46e5;
+            margin-right: 5px;
+        }
+
+        .note {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            color: #92400e;
+            font-size: 0.9em;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #1e293b;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        code {
+            background: #e2e8f0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        img {
+            max-width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>NRF 2026 Scheduler 利用マニュアル (管理者向け)</h1>
+        <p>このマニュアルでは、NRF 2026 セッションスケジューラーの基本的な使い方と、管理者専用機能について解説します。</p>
+
+        <h2>1. アカウント登録・ログイン</h2>
+        <div class="step">
+            <span class="step-number">Step 1</span> アプリにアクセスするとログイン画面が表示されます。
+        </div>
+        <div class="step">
+            <span class="step-number">Step 2</span> 初回の場合は、メールアドレスとパスワードを入力して <strong>"Sign Up"</strong>
+            をクリックしてください。<br>
+            登録済みの場合は <strong>"Sign In"</strong> をクリックします。
+        </div>
+        <div class="note">
+            <strong>重要:</strong> メール確認(Confirm
+            Email)機能は現在無効化されています（オートコンファーム設定の場合）。登録後すぐにログインできます。アプリ内でのデータはすべてこのメールアドレスに紐付いてクラウド保存されます。
+        </div>
+
+        <h2>2. 基本的な使い方 (一般機能)</h2>
+        <h3>セッションを探す・登録する</h3>
+        <p>ログインすると、全セッションが表示される「タイムラインビュー」になります。</p>
+        <ul>
+            <li><strong>MUST GO (★)</strong>: 絶対に参加したいセッション。黄色い星アイコンをクリックします。</li>
+            <li><strong>INTERESTED (♥)</strong>: 興味があるセッション。ハートアイコンをクリックします。</li>
+        </ul>
+        <p>登録したセッションはクラウドに即時保存され、<strong>"MY PLAN"</strong> ボタンでフィルタリングして確認できます。</p>
+
+        <h3>スケジュールを出力する</h3>
+        <p>画面右上のボタンから、自分のスケジュールを出力・共有できます。</p>
+        <ul>
+            <li><strong>SHARE</strong>: メール本文形式でスケジュールを作成し、メーラーを起動します。</li>
+            <li><strong>SCHEDULE (Excel)</strong>: 自分のMy PlanをExcelグリッド形式でダウンロードします。</li>
+        </ul>
+
+        <h2>3. 管理者機能 (Admin Dashboard)</h2>
+        <p>管理者権限を持つアカウント（環境変数で設定されたメールアドレス）でのみ、画面右上に <span class="admin-badge">ADMIN</span> ボタンが表示されます。</p>
+
+        <h3>管理画面へのアクセス</h3>
+        <div class="step">
+            <span class="step-number">Action</span>
+            画面右上の <span class="admin-badge">ADMIN</span> ボタンをクリックすると、管理ダッシュボードへ切り替わります。
+        </div>
+
+        <h3>全ユーザーのスケジュール閲覧</h3>
+        <p>管理画面はトップ画面と同じ「垂直タイムライングリッド」形式ですが、以下の機能が追加されています。</p>
+        <ul>
+            <li><strong>ユーザー選択</strong>: 右上のプルダウンメニューから、登録済みの全ユーザーを選択できます。</li>
+            <li><strong>閲覧モード</strong>: 選択したユーザーが登録している「Must Go」「Interested」セッションのみが明るく表示され、他人のスケジュールを視覚的に確認できます。</li>
+        </ul>
+        <div class="note">
+            管理画面は「閲覧専用」です。他人のスケジュールを変更することはできません。
+        </div>
+
+        <h3>ユーザーデータの出力</h3>
+        <div class="step">
+            <span class="step-number">Export</span>
+            特定のユーザーを選択している状態で、右上の <strong>"EXPORT USER"</strong> ボタンを押すと、そのユーザーのスケジュールのみをExcelファイルとしてダウンロードできます。
+        </div>
+
+    </div>
+</body>
+
+</html>
