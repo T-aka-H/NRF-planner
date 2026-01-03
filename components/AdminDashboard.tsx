@@ -212,17 +212,40 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         </div>
                         <div ref={timeColumnRef} className="flex-1 overflow-hidden pointer-events-none">
                             <div className="relative" style={{ height: `${(timeMarkers.length) * 30 * PIXELS_PER_MINUTE}px` }}>
-                                {timeMarkers.map(time => (
-                                    <div
-                                        key={time}
-                                        className="relative flex flex-col justify-start px-3 border-b border-slate-200/50"
-                                        style={{ height: `${30 * PIXELS_PER_MINUTE}px` }}
-                                    >
-                                        <div className="flex items-center justify-between absolute top-0 left-3 right-3 transform -translate-y-1/2">
-                                            <span className="text-[12px] font-black tabular-nums tracking-tighter bg-slate-50 px-1.5 rounded-full text-slate-400">{time}</span>
+                                {timeMarkers.map(time => {
+                                    const timeInMin = timeToMinutes(time);
+                                    const nextTimeInMin = timeInMin + 30;
+
+                                    // Count active sessions in this slot for the selected user
+                                    const activeInSlot = filteredSessions.filter(s => {
+                                        if (!s.isSelected && !s.isInterested) return false;
+                                        const start = timeToMinutes(s.time_start);
+                                        const end = timeToMinutes(s.time_end);
+                                        // Session covers this slot if it starts before slot ends and ends after slot starts
+                                        return start < nextTimeInMin && end > timeInMin;
+                                    });
+
+                                    const starCount = activeInSlot.filter(s => s.isSelected).length;
+                                    const heartCount = activeInSlot.filter(s => s.isInterested).length;
+
+                                    return (
+                                        <div
+                                            key={time}
+                                            className="relative flex flex-col justify-start px-3 border-b border-slate-200/50"
+                                            style={{ height: `${30 * PIXELS_PER_MINUTE}px` }}
+                                        >
+                                            <div className="flex flex-col items-start gap-0.5 absolute top-0 left-3 right-1 transform -translate-y-2">
+                                                <span className="text-[12px] font-black tabular-nums tracking-tighter bg-slate-50 px-1.5 rounded-full text-slate-400">{time}</span>
+                                                {(starCount > 0 || heartCount > 0) && (
+                                                    <div className="flex flex-col gap-0.5 ml-1">
+                                                        {starCount > 0 && <span className="text-[9px] font-bold text-amber-500 bg-amber-50 px-1 rounded flex items-center gap-0.5">★ {starCount}</span>}
+                                                        {heartCount > 0 && <span className="text-[9px] font-bold text-rose-500 bg-rose-50 px-1 rounded flex items-center gap-0.5">♥ {heartCount}</span>}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>

@@ -1756,9 +1756,239 @@ const PROCESSED_RAW_DATA: Session[] = RAW_LIST.map((s, idx) => ({
   isSelected: false
 })) as Session[];
 
+// ----------------------------------------------------------------------
+// 8. MASTER SESSIONS (Merged)
+// ----------------------------------------------------------------------
+
+// Helper to find and update speakers for Featured Sessions
+const FEATURED_SPEAKERS_DATA: Record<string, { name: string; title: string; company: string }[]> = {
+  "New business models: How retail organizations have evolved into business ecosystems": [
+    { name: "Alberto Serrentino", title: "Founder", company: "Varese Retail" },
+    { name: "Frederico Trajano Inácio Rodrigues", title: "CEO", company: "Magalu" },
+    { name: "Gui Serrano", title: "AVP, Corporate Strategy and Development", company: "CVS Health" }
+  ],
+  "How Mobile Technology is Shaping Customer Experience": [
+    { name: "Tyler Gipson", title: "VP Head of MX B2B", company: "Samsung Electronics America" },
+    { name: "Chris Padilla", title: "Acting CIO", company: "Dine Brands" }
+  ],
+  "AWS and PepsiCo: Accelerating AI-driven transformation from customer service to supply chain innovation": [
+    { name: "Kris Satterthwaite", title: "GM/Head of Sales, US Retail, Restaurants & CPG", company: "AWS" },
+    { name: "Dave Dohnalik", title: "SVP Technology Strategy and Enterprise Products", company: "PepsiCo" }
+  ],
+  "Experts face off: Debating solutions to tomorrow's retail struggles": [
+    { name: "Christine Russo", title: "Founder and Creator", company: "What Just Happened and RCCA" },
+    { name: "Oliver Chen", title: "Managing Director, Senior Equity Research Analyst", company: "TD Cowen" },
+    { name: "Stacey Widlitz", title: "Chief International Store Hunter", company: "SW Retail Advisors" }
+  ],
+  "Breaking through the noise: How emerging brands are capturing attention amidst a cacophony of messaging": [
+    { name: "Jess Jacobs", title: "CEO", company: "Coterie" },
+    { name: "Brooke DiPalma", title: "Senior Reporter", company: "Yahoo Finance" },
+    { name: "Noura Sakkijha", title: "CEO and Co-Founder", company: "Mejuri" },
+    { name: "Katie Babineau", title: "CMO", company: "Beyond Yoga" }
+  ],
+  "The rise of agentic commerce: What AI means for the future of shopping": [
+    { name: "Mike Edmonds", title: "VP of Agentic Commerce, Commercial Growth", company: "PayPal" },
+    { name: "Fiona Tan", title: "CTO", company: "Wayfair" },
+    { name: "Angie Brown", title: "CIO", company: "The Home Depot" },
+    { name: "Jason Del Rey", title: "Founder and Author", company: "The Aisle" }
+  ],
+  "Building bold global brands in 2026 - strategy, scale and staying power": [
+    { name: "Shane Grenley", title: "International Retail Director", company: "MANGO" },
+    { name: "Jennifer Yue", title: "SVP, Tapestry & Coach Strategy & Consumer Insights", company: "Coach" },
+    { name: "Elizabeth Preis", title: "CMO and Chief Customer Officer", company: "Victoria's Secret & Co" },
+    { name: "Vic Drabicky", title: "Founder and CEO", company: "January Digital" }
+  ],
+  "Walmart fireside chat: The future of retail in a digital-first world": [
+    { name: "Jon Fortt", title: "\"Closing Bell: Overtime\" Co-Anchor", company: "CNBC" },
+    { name: "Hari Vasudev", title: "EVP and CTO", company: "Walmart U.S." }
+  ],
+  "Economic insights and trends: Observations from Chief Economist Ira Kalish": [
+    { name: "Ira Kalish", title: "Chief US and Global Economist", company: "Deloitte" }
+  ],
+  "Agentic commerce in action: How URBN meets shoppers where they are": [
+    { name: "Maia Josebachvili", title: "CRO of AI", company: "Stripe" },
+    { name: "Rob Frieman", title: "CIO", company: "URBN Urban Outfitters, Inc." }
+  ],
+  "Leading the perpetually adaptive retail enterprise: Thriving through disruption": [
+    { name: "Krishnan Ramanujam", title: "President; Head, Consumer Business Group", company: "Tata Consultancy Services" },
+    { name: "David Wood", title: "CEO", company: "Wickes Group plc" },
+    { name: "Hannu Krook", title: "Chairman & CEO", company: "S-Group" }
+  ],
+  "An in-depth look at new Gen Z research": [
+    { name: "Brieane Olson", title: "CEO", company: "PacSun, Inc." },
+    { name: "Sheena Butler-Young", title: "Senior Correspondent", company: "The Business of Fashion" }
+  ],
+  "Looking ahead: Future proofing retail in 2028": [
+    { name: "Cassandra Napoli", title: "Head of Marketing, Events + Culture Forecasting", company: "WGSN" }
+  ],
+  "Building and scaling: Winning in a multichannel world": [
+    { name: "Melissa Gonzalez", title: "Principal/Founder", company: "MG2/MG2 Advisory" },
+    { name: "Christiane Pendarvis", title: "Co-CEO", company: "Pattern Beauty" }
+  ],
+  "Powering a retail revolution with AI innovation": [
+    { name: "Martin Sokalski", title: "Principal, Advisory", company: "KPMG" },
+    { name: "Yang Lu", title: "Chief Information & Digital Officer", company: "Tapestry Inc." }
+  ],
+  "SEO vs GEO … from ranking to relevance": [
+    { name: "Rick Egan", title: "CMO", company: "Riviera Marketing" },
+    { name: "Samir Desai", title: "EVP, Chief Digital and Technology Officer", company: "Abercrombie & Fitch Co." },
+    { name: "Neelima Sharma", title: "SVP Omnichannel and Ecommerce Technology", company: "Lowe's Companies" }
+  ],
+  "The Z Suite Meets the CMO: Insights into how Gen Z Is using AI to shop for fashion": [
+    { name: "Clay Lute", title: "Global Merchant Men's Denim", company: "The Z Suite" },
+    { name: "Olivia Meyer", title: "Gen Z Speaker & Consultant", company: "The Z Suite" },
+    {
+      name: "Sofia Sahai", title": "", company: "The Z Suite" },
+    { name: "Kristen D'Arcy", title: "CMO and Head of Digital Growth", company: "True Religion" },
+     { name: "Naomi Barrales", title: "Gen Z Consultant, Global Fashion Marketing", company: "The Z Suite" }
+  ],
+  "Reimagining retail in the age of AI: Macy's bold new chapter": [
+    { name: "Max Magni", title: "Chief Customer & Digital Officer", company: "Macy's, Inc." },
+    { name: "Stephen Frieder", title: "Chief Revenue Officer, Enterprise", company: "Adobe" }
+  ],
+  "Rewired: How AI is reshaping the path to purchase in fashion and beauty": [
+    { name: "Matthias Haase", title: "VP, Content Solutions", company: "Zalando" },
+    { name: "Brendan Witcher", title: "VP, Principal Analyst", company: "Forrester Research" },
+    { name: "Linda Li", title: "Managing Director", company: "COS North America" },
+    { name: "Nadine Graham", title: "SVP & GM, Ecommerce", company: "Sephora" }
+  ],
+  "NYC urban retail treasures: The 2026 Shopping Playbook": [
+    { name: "José Raul Padron", title: "Design Lead - The Hershey Experience", company: "Hersheys" },
+    { name: "Cynthia Ortiz", title: "International President", company: "Retail Design Institute" }
+  ],
+  "Think like a marketer, act like a creator: Brands share their secrets to success on TikTok Shop": [
+    { name: "Richard Cox", title: "Chief Merchandising Officer", company: "Pacsun" },
+    { name: "Neil Saunders", title: "Managing Director", company: "GlobalData" },
+    { name: "Feliz Papich", title: "SVP Digital Technology, Experience and Insights", company: "Crocs, Inc" },
+    { name: "Jenna Manula Linares", title: "VP, Digital Marketing", company: "tarte cosmetics" }
+  ],
+  "Revolutionizing retail: Landmark's RFID rollout across DCs and stores": [
+    { name: "Gopal Chari", title: "Regional Manager", company: "ClarityRFID" },
+    { name: "Rahul Arya", title: "VP & Head - Business Excellence Centrepoint", company: "Landmark Group" }
+  ],
+  "The art and science of modern marketing: A fireside chat with Kelly Mahoney, CMO, Ulta Beauty": [
+    { name: "Kelly Mahoney", title: "CMO", company: "Ulta Beauty" },
+    { name: "Curtis Wilson", title: "VP and General Manager, National Client Group", company: "American Express" }
+  ],
+  "The power of private brands: Luring today's cost-conscious shopper": [
+    { name: "Emily Erusha-Hilleque", title: "SVP, Private Brands", company: "Macy's" },
+    { name: "Scott Morris", title: "SVP - Food, Consumables, and Manufacturing", company: "Walmart Inc." },
+    { name: "Mike Wier", title: "VP, CVS Store Brands", company: "CVS Health" },
+    { name: "Melissa Repko", title: "Retail Reporter", company: "CNBC" },
+  ],
+  "Returns are the new retail battleground": [
+    { name: "Sender Shamiss", title: "CEO and Co-founder", company: "ReturnPro" },
+    { name: "Sylvester John", title: "VP & Head, Reverse Supply Chain", company: "Walmart US" },
+    { name: "Jessica Dickler", title: "Personal Finance Reporter", company: "CNBC" }
+  ],
+  "Can AI fix online fashion discovery?": [
+    { name: "Hilary Milnes", title: "Executive Americas Editor", company: "Vogue Business" },
+    { name: "Julie Bornstein", title: "Founder and CEO", company: "Daydream" },
+    { name: "Lauren Price", title: "SVP, Ecommerce & Digital Marketing", company: "COS" },
+    { name: "Kristen Sosa", title: "CEO", company: "Zadig&Voltaire" }
+  ],
+  "The Power of connection: How merchandising and innovation drive meaningful member moments at Sam's Club": [
+    { name: "Jason Goldberg", title: "Chief Commerce Strategy Officer", company: "Publicis Groupe" },
+    { name: "Julie Barber", title: "EVP, Chief Merchandising Officer", company: "Sam's Club" }
+  ],
+  "A New Era of Retail: Inside Target's Tech-led Transformation with Open AI": [
+    { name: "Prat Vemana", title: "EVP and Chief Information and Product Officer", company: "Target" },
+    { name: "Poonam Goyal", title: "Sr Equity Research Analyst", company: "Bloomberg Intelligence" },
+    { name: "Ashley Kramer", title: "VP, Enterprise", company: "OpenAI" }
+  ],
+  "Retail creators: Culture that converts": [
+    { name: "Sarah Henry", title: "Head of Content, Influencer, & Commerce", company: "Walmart" },
+    { name: "Jenn Volk", title: "Head of Digital", company: "H&M Americas" },
+    { name: "Jill Manoff", title: "Editor-in-chief", company: "Glossy & Modern Retail" },
+    { name: "Ashley Schapiro", title: "VP Marketing", company: "American Eagle" }
+  ],
+  "The new loyalty engine: How AI is redefining customer acquisition and retention": [
+    { name: "Jason Johnson", title: "CIO", company: "Sweetwater Sound" },
+    { name: "Eleanor Preston", title: "Regional VP, Strategic Accounts", company: "Twilio" },
+    { name: "Meera Bhatia", title: "President and COO", company: "Fabletics" }
+  ],
+  "Supercharging Customer Experience with Community-First Strategies: a conversation featuring Kevin Kelley and Barnes & Noble": [
+    { name: "Kevin Kelley", title: "Principal and Co-Founder", company: "Shook Kelley" },
+    { name: "Shannon DeVito", title: "Senior Director, Books", company: "Barnes & Noble Inc." }
+  ],
+  "Lessons from DTC trailblazers: Surviving and thriving": [
+    { name: "Dayna Quanbeck", title: "President", company: "Rothy's" },
+    { name: "Emily Heyward", title: "Co-founder and Chief Brand Officer", company: "Red Antler" },
+    { name: "Jessica Schinazi", title: "CEO", company: "Away" },
+    { name: "Ashley Kechter", title: "Global President", company: "Vuori" }
+  ],
+  "Beyond the website: Reinventing retail for AI-native shoppers": [
+    { name: "David Clark", title: "Chief Customer Officer", company: "Frasers Group" },
+    { name: "Bernadette Nixon", title: "Board Member", company: "Algolia" },
+    { name: "Jennifer Myers", title: "Head of Strategic Partnerships", company: "Microsoft Shopping" }
+  ],
+  "How to break through in 2026 without burning cash": [
+    { name: "Erik Huberman", title: "Founder and CEO", company: "Hawke Media" },
+    { name: "Oliver Trevena", title: "Co-Founder and CEO", company: "Caliwater" },
+    { name: "Jake Sloan", title: "Sr. Director of Marketing", company: "Electrolit" }
+  ],
+  "Elevating retail experiences in the digital age: Building the future of in-store media": [
+    { name: "Michael Budzisz", title: "VP, In-Store Creative & Innovation", company: "Dick's Sporting Goods" },
+    { name: "Ariel Haroush", title: "CEO and Founder", company: "Outform" },
+    { name: "Alex Rangel", title: "VP of Strategy & Marketing", company: "Outform Group" }
+  ],
+  "North American retail economic outlook 2026: What's next for consumers, retailers and the connected economy": [
+    { name: "Joyce Chang", title: "Chair of Global Research", company: "JPMorgan" }
+  ],
+  "Hungry for Innovation: Inside Taco Bell's tech-driven evolution": [
+    { name: "Dane Mathews", title: "Chief Digital & Technology Officer", company: "Taco Bell" },
+    { name: "Phillip Jackson", title: "CEO", company: "Future Commerce" }
+  ],
+  "How retail media is navigating its first economic crisis": [
+    { name: "Max Willens", title: "Principal Analyst", company: "Emarketer" },
+    { name: "Mark Williamson", title: "AVP Retail Media", company: "Costco Wholesale" },
+    { name: "Aaron Dunford", title: "VP of Nordstrom Media", company: "Nordstrom" },
+    { name: "Lisa Valentino", title: "President", company: "Best Buy Ads" }
+  ],
+  "The Connected network redefining modern commerce—with Saks Fifth Avenue": [
+    { name: "Chris Akrimi", title: "VP Supplier Network & B2B GTM", company: "Lightspeed Commerce" },
+    { name: "Dax Dasilva", title: "CEO", company: "Lightspeed Commerce Inc." },
+    { name: "Mark Cudina", title: "VP Transformation Commercial Buying & Planning", company: "Saks Global" }
+  ],
+  "The future of retail through services — how service-led strategies are reshaping retail": [
+    { name: "Eduardo Yamashita", title: "Operations Director", company: "Gouvea Ecosystem" },
+    { name: "Rogerio Barreira", title: "President", company: "McDonald's / Arcos Dorados" }
+  ],
+  "Giving Walmart fashion cred: A conversation with Denise Incandela": [
+    { name: "Denise Incandela", title: "EVP, Fashion", company: "Walmart" },
+    { name: "Rachel Dalton", title: "Head of Retailer Insights, Americas", company: "Kantar" }
+  ],
+  "Empowering the AI shopper: Creating friction-free experiences in the age of agentic commerce": [
+    { name: "Ryan Marks", title: "Dir., NA Grocery & Drug", company: "Visa" },
+    { name: "Jack Hilger", title: "Sr. Director, North America Product", company: "Visa" },
+    { name: "Andrew Laudato", title: "EVP and COO", company: "The Vitamin Shoppe" }
+  ],
+  "How traditional retailers are managing marketplaces": [
+    { name: "Miguel Almeida", title: "President of Digital & Customer Experience", company: "Nordstrom" },
+    { name: "Sarah Travis", title: "EVP and Chief Digital and Revenue Officer", company: "Target" },
+    { name: "Ken Pilot", title: "Founder", company: "Ken Pilot Ventures" },
+    { name: "Frank Bedo", title: "Chief Marketplace & eCommerce Officer", company: "Best Buy" }
+  ],
+  "Keys to connection: Creating campaigns that tap cultural relevance and drive brand preference": [
+    { name: "Hope King", title: "Founder", company: "Macro Talk" },
+    { name: "Stefani Fleurant", title: "EVP, Sports & Lifestyle Marketing", company": "Authentic Brands Group" }
+  ],
+  "Fact or Fiction? Retail Realities with Two Industry Veterans": [
+    { name: "Billy May", title: "CEO", company: "Brooklinen, Inc." },
+    { name: "Josh Krepon", title: "President, DTC", company: "Steven Madden, Ltd" }
+  ]
+};
+
 export const MASTER_SESSIONS: Session[] = [
   ...KEYNOTE_DATA,
-  ...AI_STAGE_DATA,
   ...PROCESSED_ASK_SPEAKER_DATA,
-  ...PROCESSED_RAW_DATA
+  ...PROCESSED_RAW_DATA.map(session => {
+    // Inject speakers if available
+    const speakers = FEATURED_SPEAKERS_DATA[session.title];
+    if (speakers) {
+      return { ...session, speakers };
+    }
+    return session;
+  }),
 ].sort((a, b) => a.time_start.localeCompare(b.time_start));
+```
