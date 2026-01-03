@@ -1840,7 +1840,7 @@ const FEATURED_SPEAKERS_DATA: Record<string, { name: string; title: string; comp
     {
       name: "Sofia Sahai", title": "", company: "The Z Suite" },
     { name: "Kristen D'Arcy", title: "CMO and Head of Digital Growth", company: "True Religion" },
-     { name: "Naomi Barrales", title: "Gen Z Consultant, Global Fashion Marketing", company: "The Z Suite" }
+    { name: "Naomi Barrales", title: "Gen Z Consultant, Global Fashion Marketing", company: "The Z Suite" }
   ],
   "Reimagining retail in the age of AI: Macy's bold new chapter": [
     { name: "Max Magni", title: "Chief Customer & Digital Officer", company: "Macy's, Inc." },
