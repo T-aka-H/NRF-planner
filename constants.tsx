@@ -1838,7 +1838,8 @@ const FEATURED_SPEAKERS_DATA: Record<string, { name: string; title: string; comp
     { name: "Clay Lute", title: "Global Merchant Men's Denim", company: "The Z Suite" },
     { name: "Olivia Meyer", title: "Gen Z Speaker & Consultant", company: "The Z Suite" },
     {
-      name: "Sofia Sahai", title": "", company: "The Z Suite" },
+      name: "Sofia Sahai", title: "", company: "The Z Suite"
+    },
     { name: "Kristen D'Arcy", title: "CMO and Head of Digital Growth", company: "True Religion" },
     { name: "Naomi Barrales", title: "Gen Z Consultant, Global Fashion Marketing", company: "The Z Suite" }
   ],
