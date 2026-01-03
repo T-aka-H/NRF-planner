@@ -2644,7 +2644,7 @@ const AI_STAGE_SPEAKERS_DATA: Record<string, { date: string; time_start: string;
 export const MASTER_SESSIONS: Session[] = [
   ...KEYNOTE_DATA,
   ...PROCESSED_ASK_SPEAKER_DATA,
-  ...PROCESSED_RAW_DATA.map(session => {
+  ...[...PROCESSED_RAW_DATA, ...AI_STAGE_DATA].map(session => {
     // 1. Featured Sessions (Title Match)
     let speakers = FEATURED_SPEAKERS_DATA[session.title];
     if (speakers) {
