@@ -353,7 +353,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans text-slate-900 selection:bg-indigo-100 flex flex-col h-screen overflow-hidden">
-      <header className="z-[150] bg-white border-b border-slate-200 px-6 py-4 shadow-sm shrink-0">
+      <header className="z-[150] bg-white border-b border-slate-200 px-6 py-2 shadow-sm shrink-0">
         <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="bg-indigo-600 p-2.5 rounded-2xl shadow-lg shadow-indigo-200">
@@ -397,16 +397,16 @@ const App = () => {
 
       <main className="flex-1 flex flex-col p-6 overflow-hidden">
         {/* ... Search and Filters ... */}
-        <div className="flex flex-col gap-4 mb-4 shrink-0 z-[100]">
+        <div className="flex flex-col gap-2 mb-2 shrink-0 z-[100]">
           {/* Layout Change: Single row on iPad+, Search takes priority, buttons scrollable */}
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col md:flex-row gap-2">
             <div className="flex-1 relative min-w-[200px] md:min-w-[300px] shrink-0">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input type="text" placeholder="Search sessions..." className="w-full pl-12 pr-6 py-3.5 rounded-2xl border-2 border-transparent bg-white shadow-sm focus:border-indigo-500 outline-none transition-all text-sm font-bold" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+              <input type="text" placeholder="Search sessions..." className="w-full pl-12 pr-6 py-2.5 rounded-2xl border-2 border-transparent bg-white shadow-sm focus:border-indigo-500 outline-none transition-all text-sm font-bold" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
             {/* Days - Keep visible */}
             <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar shrink-0">
-              {days.map(day => (<button key={day} onClick={() => setSelectedDay(day)} className={`px-6 py-3 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedDay === day ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}>{day.toUpperCase()}</button>))}
+              {days.map(day => (<button key={day} onClick={() => setSelectedDay(day)} className={`px-6 py-2 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedDay === day ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}>{day.toUpperCase()}</button>))}
             </div>
             {/* Filters - Allow cutoff if needed */}
             <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar min-w-0">
@@ -414,7 +414,7 @@ const App = () => {
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
-                  className={`px-4 py-3 rounded-xl text-[10px] font-black whitespace-nowrap transition-all flex items-center gap-1.5 ${filterType === type ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400 hover:text-slate-600'}`}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all flex items-center gap-1.5 ${filterType === type ? 'bg-indigo-100 text-indigo-700' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   {type === 'Priority' && <Star size={10} className="fill-current" />}
                   {type === 'Interested' && <Heart size={10} className="fill-current" />}
