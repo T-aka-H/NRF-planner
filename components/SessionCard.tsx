@@ -57,7 +57,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
   `;
 
   return (
-    <div className={containerClass} onClick={() => onToggle(session.id)}>
+    <div className={containerClass}>
       <div className="flex justify-between items-start gap-1 mb-1.5 overflow-hidden">
         <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[7px] md:text-[8px] font-black rounded-md uppercase tracking-tighter border shrink-0 ${typeStyles[session.type] || 'bg-slate-500 text-white'}`}>
           {getIcon(session.type)}

@@ -398,7 +398,8 @@ const App = () => {
       <main className="flex-1 flex flex-col p-6 overflow-hidden">
         {/* ... Search and Filters ... */}
         <div className="flex flex-col gap-4 mb-4 shrink-0 z-[100]">
-          <div className="flex flex-col md:flex-row gap-4">
+          {/* Layout Change: Stack Search and Filters on iPad (until XL screens) */}
+          <div className="flex flex-col xl:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input type="text" placeholder="Search sessions..." className="w-full pl-12 pr-6 py-3.5 rounded-2xl border-2 border-transparent bg-white shadow-sm focus:border-indigo-500 outline-none transition-all text-sm font-bold" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
