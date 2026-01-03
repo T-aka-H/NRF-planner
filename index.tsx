@@ -351,7 +351,10 @@ const App = () => {
               <Calendar className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tight text-slate-900 uppercase leading-none">NRF 2026 Scheduler</h1>
+              <div className="flex items-baseline gap-2">
+                <h1 className="text-xl font-black tracking-tight text-slate-900 uppercase leading-none">NRF 2026 Scheduler</h1>
+                <span className="text-[10px] font-medium text-slate-400">app developed by T.Hamuro</span>
+              </div>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] text-indigo-600 font-bold uppercase tracking-widest">Cloud Plan ({user.email})</span>
                 <span className="w-1 h-1 bg-slate-300 rounded-full"></span>
