@@ -1,0 +1,5 @@
+{
+  "name": "NRF 2026 Session Planner",
+  "description": "A sophisticated scheduling tool for NRF exhibition attendees to manage Keynotes, Featured Sessions, and Exhibitor Ideas with import/export capabilities.",
+  "requestFramePermissions": []
+}

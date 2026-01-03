@@ -1,0 +1,1764 @@
+
+import { Session } from './types';
+
+const KEYNOTE_DATA: Session[] = [
+  {
+    "id": "kn-1",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "08:30",
+    "time_end": "09:15",
+    "title": "NRF Chairman’s opening remarks: Welcome to The Next Now!",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Bob Eddy", "title": "Chairman and CEO", "company": "BJ's Wholesale Club, Inc." },
+      { "name": "Ed Stack", "title": "Executive Chairman", "company": "DICK'S Sporting Goods" }
+    ]
+  },
+  {
+    "id": "kn-2",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "title": "Opening Keynote – Rewriting the commerce playbook",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Sara Eisen", "title": "Co-Anchor", "company": "CNBC" },
+      { "name": "Michael Rubin", "title": "Founder and CEO", "company": "Fanatics" }
+    ]
+  },
+  {
+    "id": "kn-3",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:45",
+    "time_end": "10:15",
+    "title": "The AI Platform Shift and the Opportunity Ahead for Retail",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "John Furner", "title": "President and CEO", "company": "Walmart U.S." },
+      { "name": "Sundar Pichai", "title": "CEO", "company": "Google and Alphabet" }
+    ]
+  },
+  {
+    "id": "kn-4",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:30",
+    "time_end": "15:00",
+    "title": "Ascending Together: Driving Growth, Community, and Innovation at REI",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Mary Beth Laughton", "title": "President and CEO", "company": "REI Co-op" },
+      { "name": "Amy Farley", "title": "Executive Editor", "company": "Fast Company" }
+    ]
+  },
+  {
+    "id": "kn-5",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:00",
+    "time_end": "15:30",
+    "title": "Where craft meets intelligence: How LVMH Is reimagining luxury",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Ali Furman", "title": "Partner", "company": "PwC" },
+      { "name": "Gonzague de Pirey", "title": "Chief OmniChannel and Data Officer", "company": "LVMH" },
+      { "name": "Soumia Hadjali", "title": "Global SVP Client Development", "company": "Louis Vuitton" }
+    ]
+  },
+  {
+    "id": "kn-6",
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:30",
+    "time_end": "16:00",
+    "title": "Building the Store of Tomorrow: FairPrice Group’s Blueprint",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Vipul Chawla", "title": "Group CEO", "company": "FairPrice Group" },
+      { "name": "Jordan Berke", "title": "Founder & CEO", "company": "TOMORROW" }
+    ]
+  },
+  {
+    "id": "kn-7",
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "title": "Shaping the Next Now: A fireside chat with Fran Horowitz",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Matthew Shay", "title": "President and CEO", "company": "National Retail Federation" },
+      { "name": "Fran Horowitz", "title": "CEO", "company": "Abercrombie & Fitch Co." },
+      { "name": "Colleen Taylor", "title": "President, Merchant Services", "company": "American Express" }
+    ]
+  },
+  {
+    "id": "kn-8",
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:45",
+    "time_end": "10:15",
+    "title": "The future of an icon: Ralph Lauren’s journey",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Matthew Shay", "title": "President and CEO", "company": "National Retail Federation" },
+      { "name": "David Lauren", "title": "Chief Branding and Innovation Officer", "company": "Ralph Lauren Corporation" },
+      { "name": "Shelley Bransten", "title": "CVP, Worldwide Industry Solutions", "company": "Microsoft Corporation" }
+    ]
+  },
+  {
+    "id": "kn-9",
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:30",
+    "time_end": "15:00",
+    "title": "“The Icons” - Discussion about building defining brands",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Harley Finkelstein", "title": "President", "company": "Shopify" },
+      { "name": "Emma Grede", "title": "Founder", "company": "Good American" },
+      { "name": "Ben Francis", "title": "CEO & Founder", "company": "Gymshark" }
+    ]
+  },
+  {
+    "id": "kn-10",
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:00",
+    "time_end": "15:30",
+    "title": "Saks Global’s vision & Future-Fit Growth (PepsiCo)",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": []
+  },
+  {
+    "id": "kn-11",
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:30",
+    "time_end": "16:00",
+    "title": "Ulta Beauty unleashed: Shaping the future of beauty",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Kecia Steelman", "title": "President & CEO", "company": "Ulta Beauty" },
+      { "name": "Bobby Stephens", "title": "Head of US Retail", "company": "Deloitte Digital" }
+    ]
+  },
+  {
+    "id": "kn-12",
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "08:45",
+    "time_end": "09:15",
+    "title": "Day trading attention: Leveraging brand, speed and relevance",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Gary Vaynerchuk", "title": "Chairman", "company": "VaynerMedia" },
+      { "name": "Christopher Zara", "title": "News Director", "company": "Fast Company" }
+    ]
+  },
+  {
+    "id": "kn-13",
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "title": "Trailblazers in action: VF Corp.’s brand leadership",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Sun Choe", "title": "Global Brand President", "company": "Vans" },
+      { "name": "Nina Flood", "title": "Global Brand President", "company": "Timberland" },
+      { "name": "Mindy Grossman", "title": "Partner & Vice Chair", "company": "Consello" },
+      { "name": "Caroline Brown", "title": "Global Brand President", "company": "The North Face" }
+    ]
+  },
+  {
+    "id": "kn-14",
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:45",
+    "time_end": "10:15",
+    "title": "Heritage Meets Innovation: Leading Iconic Brands",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Linda Hubbard", "title": "President & CEO", "company": "Carhartt, Inc." },
+      { "name": "Anne Mehlman", "title": "EVP and Brand President", "company": "Crocs" },
+      { "name": "Phil Wahba", "title": "Senior Writer", "company": "Fortune" }
+    ]
+  },
+  {
+    "id": "kn-15",
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "title": "Designing for devotion: Consumer-obsessed product innovation",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Mark Barrocas", "title": "CEO", "company": "SharkNinja" },
+      { "name": "Sarah Nassauer", "title": "Retail Reporter", "company": "The Wall Street Journal" }
+    ]
+  },
+  {
+    "id": "kn-16",
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:30",
+    "time_end": "15:00",
+    "title": "Commerce Disrupted: Rise of the AI Native Consumer",
+    "type": "KeyNote",
+    "location": "Main Stage",
+    "speakers": [
+      { "name": "Jason Goldberg", "title": "Chief Commerce Strategy Officer", "company": "Publicis Groupe" }
+    ]
+  }
+];
+
+// AI Stage Data
+const AI_STAGE_RAW = [
+  // Sunday
+  { "day": "Sunday", "time_start": "10:30", "time_end": "11:00", "title": "The Intelligent Store: How dm and Vusion Are Shaping the Future of Retail", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Sunday", "time_start": "11:20", "time_end": "11:50", "title": "AI Stage - General Roundtable Discussions", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Sunday", "time_start": "12:10", "time_end": "12:40", "title": "AI-first by 2026: The new baseline for every retail brand", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Sunday", "time_start": "13:00", "time_end": "13:30", "title": "AI Stage - Agentic Roundtable Discussions", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Sunday", "time_start": "14:00", "time_end": "14:30", "title": "AI-powered productivity: Elevating your customer experience through business insights, digital simulation, and advanced robotics", "location": "River Pavilion, Snowflake Stage" },
+
+  // Monday
+  { "day": "Monday", "time_start": "10:30", "time_end": "11:00", "title": "Harnessing AI in retail: Progress, pitfalls, and potential", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Monday", "time_start": "11:20", "time_end": "11:50", "title": "AI Stage - General Roundtable Discussions", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Monday", "time_start": "12:10", "time_end": "12:40", "title": "AI at human scale: How SiriusXM builds experiences that feel personal at every touchpoint", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Monday", "time_start": "13:00", "time_end": "13:30", "title": "AI Stage - Agentic Roundtable Discussions", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Monday", "time_start": "14:00", "time_end": "14:30", "title": "Winning in the Agentic Era: Ulta’s Take on the Commerce Roadmap to Success", "location": "River Pavilion, Snowflake Stage" },
+
+  // Tuesday
+  { "day": "Tuesday", "time_start": "10:30", "time_end": "11:00", "title": "Beyond the 'buy' button: Thriving in the new agentic commerce era", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Tuesday", "time_start": "11:20", "time_end": "11:50", "title": "AI Stage - Agentic Roundtable Discussions", "location": "River Pavilion, Snowflake Stage" },
+  { "day": "Tuesday", "time_start": "12:10", "time_end": "12:40", "title": "Styling the Future of Retail: AI Patterns That Work", "location": "River Pavilion, Snowflake Stage" }
+];
+
+const AI_STAGE_DATA: Session[] = AI_STAGE_RAW.map((s, idx) => ({
+  id: `ai-stage-${idx}`,
+  date: s.day === 'Sunday' ? '2026-01-11' : s.day === 'Monday' ? '2026-01-12' : '2026-01-13',
+  day: s.day,
+  time_start: s.time_start,
+  time_end: s.time_end,
+  title: s.title,
+  type: 'AI Stage',
+  location: s.location,
+  isSelected: false,
+  speakers: []
+}));
+
+// Ask Speaker Data
+const ASK_SPEAKER_RAW = [
+  // Sunday
+  { "day": "Sunday", "time_start": "11:00", "time_end": "11:20", "title": "Ask the Speaker - Q&A: Ira Kalish", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Sunday", "time_start": "11:20", "time_end": "11:40", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Sunday", "time_start": "11:55", "time_end": "12:15", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Sunday", "time_start": "12:15", "time_end": "12:35", "title": "Ask the Speaker - Q&A: Christiane Pendarvis", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Sunday", "time_start": "12:50", "time_end": "13:05", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Sunday", "time_start": "13:05", "time_end": "13:30", "title": "Ask the Speaker - Q&A: Brieane Olson", "location": "Overview Lounge, Javits North, Level 5" },
+
+  // Monday
+  { "day": "Monday", "time_start": "11:00", "time_end": "11:20", "title": "Ask the Speaker - Q&A: Kevin Kelley", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Monday", "time_start": "11:20", "time_end": "11:40", "title": "Ask the Speaker - Q&A: Linda Li", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Monday", "time_start": "11:55", "time_end": "12:15", "title": "Ask the Speaker - Q&A: Matthias Haase", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Monday", "time_start": "12:15", "time_end": "12:35", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Monday", "time_start": "12:50", "time_end": "13:05", "title": "Ask the Speaker - Q&A: Julie Bornstein", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Monday", "time_start": "13:05", "time_end": "13:30", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+
+  // Tuesday
+  { "day": "Tuesday", "time_start": "11:00", "time_end": "11:20", "title": "Ask the Speaker - Q&A: Jason Goldberg", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Tuesday", "time_start": "11:20", "time_end": "11:40", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Tuesday", "time_start": "11:55", "time_end": "12:15", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Tuesday", "time_start": "12:15", "time_end": "12:35", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Tuesday", "time_start": "12:50", "time_end": "13:05", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" },
+  { "day": "Tuesday", "time_start": "13:05", "time_end": "13:30", "title": "Ask the Speaker - Q&A", "location": "Overview Lounge, Javits North, Level 5" }
+];
+
+const PROCESSED_ASK_SPEAKER_DATA: Session[] = ASK_SPEAKER_RAW.map((s, idx) => ({
+  id: `ask-speaker-${idx}`,
+  date: s.day === 'Sunday' ? '2026-01-11' : s.day === 'Monday' ? '2026-01-12' : '2026-01-13',
+  day: s.day,
+  time_start: s.time_start,
+  time_end: s.time_end,
+  title: s.title,
+  type: 'Ask the Speaker',
+  location: s.location,
+  isSelected: false,
+  speakers: []
+}));
+
+const RAW_LIST = [
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:30",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Shelf awareness: How smart stores win shoppers",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:30",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From reactive to proactive: How Rocky Brands scaled omnichannel support with AI",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:30",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Gymshark & SAP: Winning in retail with cloud, AI, and resilient strategies",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:30",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "One store, one forecast: Transforming retail operations with a unified platform",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "09:30",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From storefront to edge: Scaling secure retail experiences",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI in eCommerce operations: Lessons from the front lines",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "From reactive to predictive: How retailers are rewriting fulfillment for margin, speed, and resilience",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Profit starts at checkout",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Driving conversions: How 3 retailers win with dynamic, AI-powered eCommerce messages",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Exhibitor Big Ideas session produced by Firework",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "New business models: How retail organizations have evolved into business ecosystems",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "How Mobile Technology is Shaping Customer Experience",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "AWS and PepsiCo: Accelerating AI-driven transformation from customer service to supply chain innovation",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "Experts face off: Debating solutions to tomorrow’s retail struggles",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "China's AI-driven retail transformation: Implications for global brands",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Personalization at Scale: Using AI to unlock the next phase of growth",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "The Agentic Enteprise: How Salesforce helps retailers thrive in today’s AI native world",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Designing certainty: How MillerKnoll masters complexity with probabilistic planning",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "In-store retail media networks: Screen time that pays",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "Breaking through the noise: How emerging brands are capturing attention",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "The rise of agentic commerce: What AI means for the future of shopping",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "Building bold global brands in 2026 - strategy, scale and staying power",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "Walmart fireside chat: The future of retail in a digital-first world",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "From production to customer experience: The power of agentic ecosystems",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Winning the modern buyer: How a strong digital foundation delivers the customer experiences shoppers expect",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Turning schedules into action – how Kendra Scott drives performance",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The future shopper in the Agentic era with Kyndryl & VML",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "From weeks to hours: Accelerating speed-to-market with Agentic AI",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Economic insights and trends: Observations from Chief Economist Ira Kalish",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Agentic commerce in action: How URBN meets shoppers where they are",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Leading the perpetually adaptive retail enterprise: Thriving through disruption",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "An in-depth look at new Gen Z research",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Looking ahead: Future proofing retail in 2028",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Building and scaling: Winning in a multichannel world",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Powering a retail revolution with AI innovation",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "SEO vs GEO … from ranking to relevance",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Building the AI-ready enterprise: How JD Sports is scaling smarter",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Redefining customer loyalty through smarter post-purchase journeys",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "The future of retail: How RFID lays a foundation for AI-driven analytics",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI meets home services: Taskrabbit’s integration with Alexa+",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Turning discovery into revenue: Tapestry's AI-powered retail transformation",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:00",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Beyond loss prevention: Building resilient retail",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:00",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI as the retail game-changer: Leading the frontier firm transformation",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:00",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Beyond the low-hanging fruit: Driving a bold digital transformation",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:00",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Drive growth with unified Agentforce commerce",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "14:00",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI in retail: From hype to sustainable success",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Every shift counts: Michael Kors & Sprouts on turning execution into revenue",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "From pilots to profit - Agentic AI at scale",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Merchandising agility: Innovation at Urban Outfitters with velocity data & strategy AI",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI innovation: From design to customer satisfaction",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Improve customer loyalty with Agentic marketing",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Smart commitment management with CLM: Lessons from Lands’ End",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Smarter scheduling, happier teams: How Marine Layer elevates the retail experience",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Modernizing frontline work: Pilot's journey",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Securing the AI agents that power the future of retail",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-11",
+    "day": "Sunday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Localization: Where data meets place",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Renovating your business model to ignite strategic growth: A fireside chat with Lowe’s",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From chaos to clarity: AI-powered pricing & inventory as the new margin engine",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Reimagining retail with AI - Cognizant, Academy Sport, Monro & El Puerto de Liverpool",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI for retail - Powered by partnerships",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "09:15",
+    "time_end": "10:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Empowering the frontline with AI: 7-Eleven and Hy-Vee’s Workday transformation",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Smashing retail silos with AI-powered network transparency",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "How customer experience still creates retail’s competitive edge",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI frontier: Blending innovation and tradition",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Democratizing retail media: Technology that powers growth",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:15",
+    "time_end": "10:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Accelerating retail transformation: Lessons from a multi-phase enterprise rollout",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "The Z Suite Meets the CMO: Insights into how Gen Z Is using AI to shop for fashion",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "Reimagining retail in the age of AI: Macy's bold new chapter",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "Rewired: How AI is reshaping the path to purchase in fashion and beauty",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "NYC urban retail treasures: The 2026 Shopping Playbook",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "The pragmatic path to composability: Lessons from the world’s largest athletic retailer",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Is Agentic AI already rewriting the rules of retail leadership?",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Revolutionizing fresh operations: Embracing RFID in grocery",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Winning peak season: How leading retailers redefine Black Friday with AI",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:00",
+    "time_end": "11:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "How Kroger drives better frontline experience with AI",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "Think like a marketer, act like a creator: Brands share their secrets to success on TikTok Shop",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "Revolutionizing retail: Landmark’s RFID rollout across DCs and stores",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "The art and science of modern marketing: A fireside chat with Kelly Mahoney, CMO, Ulta Beauty",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "The power of private brands: Luring today’s cost-conscious shopper",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The quiet backbone of retail: IoT supply chain systems that prevent store failure",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Scaling AI in retail: Tractor Supply and RELEX on what’s next",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Inventory in sync: How digital twin technology protects the brand promise",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Becoming a frontier firm: Unlocking the new ROI — return on intelligence",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "11:45",
+    "time_end": "12:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The AI-powered shopper: How generative agents are building retail’s new front door",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Returns are the new retail battleground",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Can AI fix online fashion discovery?",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "The Power of connection: How merchandising and innovation drive meaningful member moments at Sam’s Club",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "A New Era of Retail: Inside Target’s Tech-led Transformation with Open AI",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:30",
+    "time_end": "13:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The ultimate customer experience: Hilton & Universal Music Group's data & AI journeys",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:30",
+    "time_end": "13:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Data, innovation and AI at Tapestry: Coach and Kate Spade",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:30",
+    "time_end": "13:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "When AI works for people: Transforming engagement, retention and efficiency",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:30",
+    "time_end": "13:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Digital resilience: Inside the tech transformation at Burger King",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "12:30",
+    "time_end": "13:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The retail leader's Edge: Pricing for AI, tariffs, and the new consumer",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Retail creators: Culture that converts",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "The new loyalty engine: How AI is redefining customer acquisition and retention",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Supercharging Customer Experience with Community-First Strategies: a conversation featuring Kevin Kelley and Barnes & Noble",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Lessons from DTC trailblazers: Surviving and thriving",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:30",
+    "time_end": "14:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Redefining retail resilience: Prioritizing transactions with 5G network slicing",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:30",
+    "time_end": "14:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Transforming retail frontlines: Real-world wins with frontline AI",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:30",
+    "time_end": "14:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Growing market share in a disrupted retail landscape",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:30",
+    "time_end": "14:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "How Amazon and adidas are setting new fulfillment standards",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:30",
+    "time_end": "14:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "An AI holiday: Unpacking changing shopper habits and planning for 2026",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:45",
+    "time_end": "14:15",
+    "type": "Featured Session",
+    "title": "Beyond the website: Reinventing retail for AI-native shoppers",
+    "location": "Javits North, Level 4, ReturnPro Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "13:45",
+    "time_end": "14:15",
+    "type": "Featured Session",
+    "title": "How to break through in 2026 without burning cash",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:15",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From vision to value: How Agentic and Perceptive AI are shaping the future of retail",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:15",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "How Lowe’s is super powering associates to enhance customer service",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:15",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From complexity to performance & productivity: How TravelCenters of America, Ford & Avis unlock productivity",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:15",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Transform customer experience with AI: Lessons from Saks Global and Dine Brands",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "14:15",
+    "time_end": "15:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "Retail under attack: Safeguarding operations in a world of constant threats",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Modern data, modern retail: How leaders are transforming for what’s next",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "The future of retail spend",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "The new payment methods boosting checkout conversion",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "The AI-empowered organization: Setting a new bar for innovation and pace of change",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "15:15",
+    "time_end": "15:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI-powered content at scale: The Home Depot marketing reinvention",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Serving relevance at Scale: Modernizing digital discovery with AI",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "The decision excellence playbook for retail leaders",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "“Bring the outside in”: Operationalizing weather analytics to successfully manage demand volatility",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Accelerating agentic commerce at the intelligent retail edge with HPE and NVIDIA",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-12",
+    "day": "Monday",
+    "time_start": "16:00",
+    "time_end": "16:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Redefining retail payments: Seamless, secure, omnichannel commerce",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "From vision to value: How innovative brands are powering their AI transformation",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Fulfilling 80% of online orders from stores: How Dick’s Sporting Goods achieved omnichannel excellence",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Localized, optimized & not surprised! Leveraging weather-driven demand in a retail business",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Turning data into action: A journey to operational excellence",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "09:15",
+    "time_end": "09:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Retail’s new advantage: Sustainable growth powered by location intelligence",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:15",
+    "time_end": "11:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI for retail in action: Where intelligent insights meet authentic experiences",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:15",
+    "time_end": "11:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "How Alo Yoga and Tailored Brands drive merchandising growth with AI",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:15",
+    "time_end": "11:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "From “markdowns” to a “waste ecosystem”: How M&S is redesigning exit, freshness and margin",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:15",
+    "time_end": "11:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "The 25% comp sales gap you can’t ignore",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:15",
+    "time_end": "11:00",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI and the connected retail journey: Unifying products, people, and experiences",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "Elevating retail experiences in the digital age: Building the future of in-store media",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "North American retail economic outlook 2026: What’s next for consumers, retailers and the connected economy",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "10:30",
+    "time_end": "11:00",
+    "type": "Featured Session",
+    "title": "Hungry for Innovation: Inside Taco Bell's tech-driven evolution",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "How retail media is navigating its first economic crisis",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "The Connected network redefining modern commerce—with Saks Fifth Avenue",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:20",
+    "time_end": "11:50",
+    "type": "Featured Session",
+    "title": "The future of retail through services — how service-led strategies are reshaping retail",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:30",
+    "time_end": "12:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "From runway to checkout: The data exposing the trends that will reshape apparel, luxury & footwear in 2026",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:30",
+    "time_end": "12:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "From insight to action: How AI is rewriting retail execution",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:30",
+    "time_end": "12:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Future under pressure: Inside the moves retailers are making for 2026",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:30",
+    "time_end": "12:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI-powered grocery: Driving margin, security, and shopper loyalty",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "11:30",
+    "time_end": "12:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Rewriting commerce with AI: How data, creators, and platforms shape retail discovery and growth",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Giving Walmart fashion cred: A conversation with Denise Incandela",
+    "location": "Javits North, Level 4, Mirakl Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "Empowering the AI shopper: Creating friction-free experiences in the age of agentic commerce",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "12:10",
+    "time_end": "12:40",
+    "type": "Featured Session",
+    "title": "How traditional retailers are managing marketplaces",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Keys to connection: Creating campaigns that tap cultural relevance and drive brand preference",
+    "location": "Javits North, Level 4, Logicbroker Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:30",
+    "type": "Featured Session",
+    "title": "Fact or Fiction? Retail Realities with Two Industry Veterans",
+    "location": "Javits North, Level 4, Klaviyo Stage"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "The new omnichannel playbook for grocery leaders",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "How Tecovas and Mattress Firm are scaling with AI for inventory, planning and IT",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI for resilient supply chains",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "Exhibitor Big Ideas session produced by Symphony AI",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "13:00",
+    "time_end": "13:45",
+    "type": "Exhibitor Big Ideas",
+    "title": "AI and Cybersecurity: Protecting the retail environment of the future",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "The future of social retail: Where shopping meets community",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "From video to value: Turning cameras into retail growth engines",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Reimaging merchant payments: How Bank of America and FreedomPay are shaping the future of global commerce",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Why intelligent inventory is the new retail currency",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:00",
+    "time_end": "14:30",
+    "type": "Exhibitor Big Ideas",
+    "title": "Turning transactions into transformations: How payment data fuels the future of retail",
+    "location": "Exhibitor Big Ideas Stage 5"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:45",
+    "time_end": "15:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Scaling connectivity across every storefront: How Meter is simplifying multi-site retail networks",
+    "location": "Exhibitor Big Ideas Stage 1"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:45",
+    "time_end": "15:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The top 10 retention moves the fastest-growing brands swear by in 2026",
+    "location": "Exhibitor Big Ideas Stage 2"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:45",
+    "time_end": "15:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "From pen & paper to robots: Inside Staples Canada’s robotics rollout",
+    "location": "Exhibitor Big Ideas Stage 3"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:45",
+    "time_end": "15:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "Retail resilience: How back office functions enable agility amid tariffs, legislation, and consumer shifts",
+    "location": "Exhibitor Big Ideas Stage 4"
+  },
+  {
+    "date": "2026-01-13",
+    "day": "Tuesday",
+    "time_start": "14:45",
+    "time_end": "15:15",
+    "type": "Exhibitor Big Ideas",
+    "title": "The million-dollar associate: Supercharging human connection with AI-powered clienteling",
+    "location": "Exhibitor Big Ideas Stage 5"
+  }
+];
+
+const PROCESSED_RAW_DATA: Session[] = RAW_LIST.map((s, idx) => ({
+  ...s,
+  id: `provided-${idx}`,
+  speakers: [],
+  isSelected: false
+})) as Session[];
+
+export const MASTER_SESSIONS: Session[] = [
+  ...KEYNOTE_DATA,
+  ...AI_STAGE_DATA,
+  ...PROCESSED_ASK_SPEAKER_DATA,
+  ...PROCESSED_RAW_DATA
+].sort((a, b) => a.time_start.localeCompare(b.time_start));
