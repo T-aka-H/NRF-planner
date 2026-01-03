@@ -9,7 +9,7 @@ import SessionDialog from './components/SessionDialog';
 import {
   Download, Upload, Plus, Calendar, Filter, Search,
   ListTodo, LayoutDashboard, Clock, Mail, Heart, Star, MapPin, Table,
-  Loader2
+  Loader2, User as UserIcon
 } from 'lucide-react';
 
 const timeToMinutes = (timeStr: string) => {
@@ -23,6 +23,7 @@ const DAY_END_MINUTES = 17 * 60 + 30;
 const COLUMN_WIDTH = 300;
 const TIME_COL_WIDTH = 110;
 
+import AdminDashboard from './components/AdminDashboard';
 import { supabase, UserSchedule } from './lib/supabase';
 import Auth from './components/Auth';
 import { User } from '@supabase/supabase-js';
@@ -42,7 +43,9 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<SessionType | 'All' | 'Priority' | 'Interested'>('All');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'browse' | 'my-plan'>('browse');
+  const [viewMode, setViewMode] = useState<'browse' | 'my-plan' | 'admin'>('browse');
+
+  const isAdmin = user?.email === 'takayuki.hamuro@sumitomocorp.com';
 
   const days = ['Sunday', 'Monday', 'Tuesday'];
   const sessionTypes: (SessionType | 'All' | 'Priority' | 'Interested')[] = [
@@ -334,6 +337,7 @@ const App = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setViewMode('browse');
   };
 
   if (loadingSession) {
@@ -342,6 +346,10 @@ const App = () => {
 
   if (!user) {
     return <Auth />;
+  }
+
+  if (viewMode === 'admin' && isAdmin) {
+    return <AdminDashboard onBack={() => setViewMode('browse')} />;
   }
 
   const mustGoCount = sessions.filter(s => s.isSelected).length;
