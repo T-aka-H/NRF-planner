@@ -1971,7 +1971,7 @@ const FEATURED_SPEAKERS_DATA: Record<string, { name: string; title: string; comp
   ],
   "Keys to connection: Creating campaigns that tap cultural relevance and drive brand preference": [
     { name: "Hope King", title: "Founder", company: "Macro Talk" },
-    { name: "Stefani Fleurant", title: "EVP, Sports & Lifestyle Marketing", company": "Authentic Brands Group" }
+    { name: "Stefani Fleurant", title: "EVP, Sports & Lifestyle Marketing", company: "Authentic Brands Group" }
   ],
   "Fact or Fiction? Retail Realities with Two Industry Veterans": [
     { name: "Billy May", title: "CEO", company: "Brooklinen, Inc." },
