@@ -398,16 +398,18 @@ const App = () => {
       <main className="flex-1 flex flex-col p-6 overflow-hidden">
         {/* ... Search and Filters ... */}
         <div className="flex flex-col gap-4 mb-4 shrink-0 z-[100]">
-          {/* Layout Change: Stack Search and Filters on iPad (until XL screens) */}
-          <div className="flex flex-col xl:flex-row gap-4">
-            <div className="flex-1 relative">
+          {/* Layout Change: Single row on iPad+, Search takes priority, buttons scrollable */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative min-w-[200px] md:min-w-[300px] shrink-0">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input type="text" placeholder="Search sessions..." className="w-full pl-12 pr-6 py-3.5 rounded-2xl border-2 border-transparent bg-white shadow-sm focus:border-indigo-500 outline-none transition-all text-sm font-bold" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
             </div>
-            <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
+            {/* Days - Keep visible */}
+            <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar shrink-0">
               {days.map(day => (<button key={day} onClick={() => setSelectedDay(day)} className={`px-6 py-3 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedDay === day ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}>{day.toUpperCase()}</button>))}
             </div>
-            <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar">
+            {/* Filters - Allow cutoff if needed */}
+            <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100 overflow-x-auto no-scrollbar min-w-0">
               {sessionTypes.map(type => (
                 <button
                   key={type}
