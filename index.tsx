@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import * as XLSX from 'https://esm.sh/xlsx';
-import { Session, SessionType } from './types';
+import { Session, SessionType, SessionResource } from './types';
 import { MASTER_SESSIONS } from './constants';
 import SessionCard from './components/SessionCard';
 import SessionDialog from './components/SessionDialog';
@@ -24,7 +24,7 @@ const COLUMN_WIDTH = 300;
 const TIME_COL_WIDTH = 110;
 
 import AdminDashboard from './components/AdminDashboard';
-import { supabase, UserSchedule } from './lib/supabase';
+import { supabase, UserSchedule, fetchSessionResources, getSessionKey } from './lib/supabase';
 import Auth from './components/Auth';
 import { User } from '@supabase/supabase-js';
 
@@ -37,7 +37,9 @@ const App = () => {
 
   // Base master sessions (static)
   // We keep the master list separate from user state to avoid complex merging issues
+  // We keep the master list separate from user state to avoid complex merging issues
   const [userSchedules, setUserSchedules] = useState<Record<string, { isSelected: boolean, isInterested: boolean }>>({});
+  const [resources, setResources] = useState<Record<string, SessionResource>>({});
 
   const [selectedDay, setSelectedDay] = useState<string>('Sunday');
   const [searchQuery, setSearchQuery] = useState('');
@@ -77,10 +79,16 @@ const App = () => {
     }
 
     const fetchData = async () => {
-      const { data, error } = await supabase
-        .from('user_schedules')
-        .select('session_id, is_selected, is_interested')
-        .eq('user_id', user.id);
+      const [scheduleData, resourceData] = await Promise.all([
+        supabase
+          .from('user_schedules')
+          .select('session_id, is_selected, is_interested')
+          .eq('user_id', user.id),
+        fetchSessionResources()
+      ]);
+
+      const { data, error } = scheduleData;
+      setResources(resourceData);
 
       if (error) {
         console.error('Error fetching schedules:', error);
@@ -528,6 +536,7 @@ const App = () => {
                             compact={duration <= 30}
                             columnIndex={colIdx}
                             totalColumns={locations.length}
+                            resource={resources[getSessionKey(session)]}
                           />
                         </div>
                       );

@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Session, SessionType } from '../types';
-import { Clock, Star, MapPin, Sparkles, Utensils, MessageCircle, Ticket, GlassWater, Zap, Info, Heart } from 'lucide-react';
+import { Session, SessionType, SessionResource } from '../types';
+import { Clock, Star, MapPin, Sparkles, Utensils, MessageCircle, Ticket, GlassWater, Zap, Info, Heart, Mic, BrainCircuit, Link } from 'lucide-react';
 
 interface SessionCardProps {
   session: Session;
@@ -13,10 +13,11 @@ interface SessionCardProps {
   compact?: boolean;
   columnIndex?: number;
   totalColumns?: number;
+  resource?: SessionResource;
 }
 
 const SessionCard: React.FC<SessionCardProps> = ({
-  session, onToggle, onToggleInterested, isSelected, isInterested, compact, columnIndex = 0, totalColumns = 1
+  session, onToggle, onToggleInterested, isSelected, isInterested, compact, columnIndex = 0, totalColumns = 1, resource
 }) => {
   const typeStyles: Record<string, string> = {
     'KeyNote': 'bg-indigo-700 text-white border-indigo-900',
@@ -109,6 +110,45 @@ const SessionCard: React.FC<SessionCardProps> = ({
         <h4 className="text-sm md:text-base font-black leading-snug mb-5 text-white">{session.title}</h4>
 
         <div className="space-y-4">
+          {/* Resources */}
+          {resource && (resource.audio_url || resource.notebook_url || resource.mindmap_url) && (
+            <div className="flex flex-col gap-2 pb-4 mb-2 border-b border-white/10">
+              <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block mb-1">AI Insights & Resources</span>
+              <div className="grid grid-cols-1 gap-2">
+                {resource.audio_url && (
+                  <a
+                    href={resource.audio_url} target="_blank" rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-400 text-white p-2 rounded-lg transition-colors group/btn"
+                  >
+                    <div className="bg-white/20 p-1 rounded-md"><Mic size={14} className="text-white" /></div>
+                    <span className="text-xs font-bold">Play Audio Overview</span>
+                  </a>
+                )}
+                {resource.notebook_url && (
+                  <a
+                    href={resource.notebook_url} target="_blank" rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
+                  >
+                    <div className="bg-white/10 p-1 rounded-md"><BrainCircuit size={14} className="text-indigo-300" /></div>
+                    <span className="text-xs font-bold">NotebookLM Chat</span>
+                  </a>
+                )}
+                {resource.mindmap_url && (
+                  <a
+                    href={resource.mindmap_url} target="_blank" rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
+                  >
+                    <div className="bg-white/10 p-1 rounded-md"><Link size={14} className="text-indigo-300" /></div>
+                    <span className="text-xs font-bold">MindMap / Links</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
           {session.speakers && session.speakers.length > 0 && (
             <div className="pb-4 mb-2 border-b border-white/10">
               <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block mb-3">Featured Speakers</span>

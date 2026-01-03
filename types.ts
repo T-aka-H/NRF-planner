@@ -1,12 +1,12 @@
 
-export type SessionType = 
-  | 'KeyNote' 
-  | 'Featured Session' 
-  | 'Exhibitor Big Ideas' 
-  | 'AI Stage' 
-  | 'Foodservice Tech' 
-  | 'Ask the Speaker' 
-  | 'Special Program' 
+export type SessionType =
+  | 'KeyNote'
+  | 'Featured Session'
+  | 'Exhibitor Big Ideas'
+  | 'AI Stage'
+  | 'Foodservice Tech'
+  | 'Ask the Speaker'
+  | 'Special Program'
   | 'Networking Event';
 
 export interface Speaker {
@@ -31,4 +31,13 @@ export interface Session {
 
 export interface AppState {
   savedSessions: Session[];
+}
+
+export interface SessionResource {
+  id: string;
+  session_id: string;
+  audio_url?: string;
+  notebook_url?: string;
+  mindmap_url?: string;
+  created_at: string;
 }

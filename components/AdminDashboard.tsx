@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, fetchSessionResources, saveSessionResource, getSessionKey } from '../lib/supabase';
 import { MASTER_SESSIONS } from '../constants';
-import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown } from 'lucide-react';
+import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown, Link, Mic, BrainCircuit, X, Save } from 'lucide-react';
 import SessionCard from './SessionCard';
+import { SessionResource } from '../types';
 import * as XLSX from 'https://esm.sh/xlsx';
 
 // Constants reused from index.tsx
@@ -34,6 +35,12 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     const [selectedUserEmail, setSelectedUserEmail] = useState<string>('');
     const [selectedDay, setSelectedDay] = useState<string>('Sunday');
 
+    // Resource Management
+    const [resources, setResources] = useState<Record<string, SessionResource>>({});
+    const [editingSession, setEditingSession] = useState<any | null>(null);
+    const [resourceForm, setResourceForm] = useState({ audio_url: '', notebook_url: '', mindmap_url: '' });
+    const [savingResource, setSavingResource] = useState(false);
+
     const gridScrollRef = useRef<HTMLDivElement>(null);
     const timeColumnRef = useRef<HTMLDivElement>(null);
 
@@ -42,9 +49,13 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     useEffect(() => {
         const fetchAdminData = async () => {
             try {
-                const { data, error } = await supabase.rpc('get_all_user_schedules');
-                if (error) throw error;
-                setRawData(data || []);
+                const [scheduleData, resourceData] = await Promise.all([
+                    supabase.rpc('get_all_user_schedules').then(res => res.data || []),
+                    fetchSessionResources()
+                ]);
+
+                setRawData(scheduleData);
+                setResources(resourceData);
             } catch (err: any) {
                 console.error('Admin fetch error:', err);
                 setError(err.message || 'Failed to fetch data');
@@ -147,6 +158,45 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "User Schedule");
         XLSX.writeFile(wb, `NRF2026_${selectedUserEmail}_Schedule.xlsx`);
+    };
+
+    const handleSessionClick = (sessionId: string) => {
+        const session = MASTER_SESSIONS.find(s => s.id === sessionId);
+        if (!session) return;
+
+        const key = getSessionKey(session);
+        const res = resources[key] || {};
+
+        setEditingSession(session);
+        setResourceForm({
+            audio_url: res.audio_url || '',
+            notebook_url: res.notebook_url || '',
+            mindmap_url: res.mindmap_url || ''
+        });
+    };
+
+    const handleSaveResource = async () => {
+        if (!editingSession) return;
+        setSavingResource(true);
+        try {
+            const key = getSessionKey(editingSession);
+            const saved = await saveSessionResource({
+                session_id: key,
+                ...resourceForm
+            });
+
+            // Update local state
+            setResources(prev => ({
+                ...prev,
+                [key]: saved
+            }));
+            setEditingSession(null);
+        } catch (e) {
+            console.error(e);
+            alert('Failed to save resource');
+        } finally {
+            setSavingResource(false);
+        }
     };
 
     if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-indigo-600" /></div>;
@@ -304,7 +354,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                                                 >
                                                     <SessionCard
                                                         session={session}
-                                                        onToggle={() => { }} // Read-only in Admin
+                                                        onToggle={handleSessionClick} // Open editor
                                                         onToggleInterested={() => { }} // Read-only
                                                         isSelected={isSelected}
                                                         isInterested={isInterested}
@@ -327,6 +377,76 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     </div>
                 </div>
             </div>
+            {/* Resource Editor Modal */}
+            {editingSession && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl p-6 w-full max-w-lg shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <span className="text-xs font-black text-indigo-600 uppercase tracking-widest">Edit Resources</span>
+                                <h3 className="text-xl font-black text-slate-900 leading-tight mt-1">{editingSession.title}</h3>
+                                <p className="text-sm text-slate-500 font-bold mt-1">{editingSession.time_start} - {editingSession.time_end}</p>
+                            </div>
+                            <button onClick={() => setEditingSession(null)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                                <X size={20} className="text-slate-400" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest mb-2">
+                                    <Mic size={14} /> Audio Link (MP3/Drive)
+                                </label>
+                                <input
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                    placeholder="https://..."
+                                    value={resourceForm.audio_url}
+                                    onChange={e => setResourceForm(prev => ({ ...prev, audio_url: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest mb-2">
+                                    <BrainCircuit size={14} /> NotebookLM URL
+                                </label>
+                                <input
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                    placeholder="https://notebooklm.google..."
+                                    value={resourceForm.notebook_url}
+                                    onChange={e => setResourceForm(prev => ({ ...prev, notebook_url: e.target.value }))}
+                                />
+                            </div>
+                            <div>
+                                <label className="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest mb-2">
+                                    <Link size={14} /> MindMap / Other URL
+                                </label>
+                                <input
+                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                    placeholder="https://..."
+                                    value={resourceForm.mindmap_url}
+                                    onChange={e => setResourceForm(prev => ({ ...prev, mindmap_url: e.target.value }))}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-8">
+                            <button
+                                onClick={() => setEditingSession(null)}
+                                className="flex-1 py-3.5 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleSaveResource}
+                                disabled={savingResource}
+                                className="flex-1 py-3.5 rounded-xl font-black text-white bg-indigo-600 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {savingResource ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                                SAVE CHANGES
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
