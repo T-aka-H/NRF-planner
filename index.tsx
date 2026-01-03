@@ -45,7 +45,8 @@ const App = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'browse' | 'my-plan' | 'admin'>('browse');
 
-  const isAdmin = user?.email === 'takayuki.hamuro@sumitomocorp.com';
+  const adminEmails = (import.meta.env.VITE_ADMIN_EMAIL || '').split(',').map((email: string) => email.trim());
+  const isAdmin = user?.email && adminEmails.includes(user.email);
 
   const days = ['Sunday', 'Monday', 'Tuesday'];
   const sessionTypes: (SessionType | 'All' | 'Priority' | 'Interested')[] = [
@@ -218,21 +219,7 @@ const App = () => {
     XLSX.writeFile(wb, "NRF2026_MySchedule_Grid.xlsx");
   };
 
-  const handleExportJSON = () => {
-    const dataToExport = sessions.filter(s => s.isSelected || s.isInterested);
-    if (dataToExport.length === 0) {
-      alert('プランニングしたセッションがありません。');
-      return;
-    }
-    const dataStr = JSON.stringify(dataToExport, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `NRF2026_MyPlan.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
+
 
   const handleEmailShare = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -383,11 +370,14 @@ const App = () => {
               <button onClick={() => setViewMode('my-plan')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black transition-all ${viewMode === 'my-plan' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}><ListTodo size={14} /> MY PLAN ({mustGoCount + interestedCount})</button>
             </div>
 
+            {isAdmin && (
+              <button onClick={() => setViewMode('admin')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg text-xs font-black hover:bg-slate-900 transition-all shadow-md"><UserIcon size={14} /> ADMIN</button>
+            )}
+
             <button onClick={handleEmailShare} className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-black hover:bg-indigo-700 transition-all active:scale-95 shadow-md"><Mail size={14} /> SHARE</button>
 
             <div className="flex gap-2">
               <button onClick={handleExportExcel} className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-black hover:bg-emerald-700 transition-all shadow-md active:scale-95"><Table size={14} /> SCHEDULE</button>
-              <button onClick={handleExportJSON} className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-black hover:bg-slate-800 transition-all shadow-md active:scale-95"><Download size={14} /> JSON</button>
             </div>
           </div>
         </div>
