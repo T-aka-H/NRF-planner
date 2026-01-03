@@ -276,7 +276,8 @@ const App = () => {
     return base.filter(s => {
       const matchesDay = s.day === selectedDay;
       const matchesSearch = s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (s.location?.toLowerCase().includes(searchQuery.toLowerCase()));
+        (s.location?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (s.speakers?.some(sp => sp.name.toLowerCase().includes(searchQuery.toLowerCase()) || sp.company.toLowerCase().includes(searchQuery.toLowerCase())));
 
       let matchesType = true;
       if (filterType === 'Priority') {
