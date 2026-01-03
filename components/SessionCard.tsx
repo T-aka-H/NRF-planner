@@ -10,13 +10,13 @@ interface SessionCardProps {
   isSelected: boolean;
   isInterested?: boolean;
   hasConflict?: boolean;
-  compact?: boolean; 
+  compact?: boolean;
   columnIndex?: number;
   totalColumns?: number;
 }
 
-const SessionCard: React.FC<SessionCardProps> = ({ 
-  session, onToggle, onToggleInterested, isSelected, isInterested, compact, columnIndex = 0, totalColumns = 1 
+const SessionCard: React.FC<SessionCardProps> = ({
+  session, onToggle, onToggleInterested, isSelected, isInterested, compact, columnIndex = 0, totalColumns = 1
 }) => {
   const typeStyles: Record<string, string> = {
     'KeyNote': 'bg-indigo-700 text-white border-indigo-900',
@@ -41,16 +41,16 @@ const SessionCard: React.FC<SessionCardProps> = ({
 
   const showOnLeft = columnIndex > (totalColumns / 2);
 
-  const tooltipPositionClass = showOnLeft 
-    ? 'right-[calc(100%+20px)] left-auto' 
+  const tooltipPositionClass = showOnLeft
+    ? 'right-[calc(100%+20px)] left-auto'
     : 'left-[calc(100%+20px)] right-auto';
 
   const containerClass = `
     group/card relative flex flex-col h-full p-2.5 md:p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer select-none
-    ${isSelected 
-      ? 'border-indigo-600 bg-white shadow-xl ring-2 ring-indigo-500/20' 
-      : isInterested 
-        ? 'border-rose-200 bg-white shadow-sm' 
+    ${isSelected
+      ? 'border-indigo-600 bg-white shadow-xl ring-2 ring-indigo-500/20'
+      : isInterested
+        ? 'border-rose-200 bg-white shadow-sm'
         : 'border-slate-100 bg-white hover:border-slate-300 hover:shadow-md'
     }
   `;
@@ -62,16 +62,16 @@ const SessionCard: React.FC<SessionCardProps> = ({
           {getIcon(session.type)}
           {session.type}
         </span>
-        
+
         <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
-          <button 
+          <button
             onClick={(e) => { e.stopPropagation(); onToggleInterested?.(session.id); }}
             className={`transition-all hover:scale-125 ${isInterested ? 'text-rose-500' : 'text-slate-200 hover:text-rose-300'}`}
           >
             <Heart size={16} fill={isInterested ? "currentColor" : "none"} />
           </button>
-          
-          <button 
+
+          <button
             onClick={(e) => { e.stopPropagation(); onToggle(session.id); }}
             className={`transition-all hover:scale-125 ${isSelected ? 'text-amber-500' : 'text-slate-200 hover:text-amber-400'}`}
           >
@@ -101,14 +101,29 @@ const SessionCard: React.FC<SessionCardProps> = ({
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">SESSION OVERVIEW</span>
           </div>
           <div className="flex gap-2">
-             {isSelected && <Star size={14} className="text-amber-400 fill-amber-400" />}
-             {isInterested && <Heart size={14} className="text-rose-400 fill-rose-400" />}
+            {isSelected && <Star size={14} className="text-amber-400 fill-amber-400" />}
+            {isInterested && <Heart size={14} className="text-rose-400 fill-rose-400" />}
           </div>
         </div>
-        
+
         <h4 className="text-sm md:text-base font-black leading-snug mb-5 text-white">{session.title}</h4>
-        
+
         <div className="space-y-4">
+          {session.speakers && session.speakers.length > 0 && (
+            <div className="pb-4 mb-2 border-b border-white/10">
+              <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block mb-3">Featured Speakers</span>
+              <div className="space-y-3">
+                {session.speakers.map((sp, i) => (
+                  <div key={i} className="group/sp">
+                    <p className="text-xs font-black text-white group-hover/sp:text-indigo-300 transition-colors">{sp.name}</p>
+                    <p className="text-[10px] text-slate-400 leading-tight font-medium">{sp.title}</p>
+                    <p className="text-[10px] text-indigo-400/80 font-black tracking-tight">{sp.company}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-start gap-4">
             <div className="mt-1 p-1 bg-white/10 rounded"><Clock size={14} className="text-indigo-400" /></div>
             <div className="flex flex-col">
@@ -124,21 +139,6 @@ const SessionCard: React.FC<SessionCardProps> = ({
               <span className="text-xs font-bold leading-tight">{session.location || 'Exhibition Hall'}</span>
             </div>
           </div>
-
-          {session.speakers && session.speakers.length > 0 && (
-            <div className="pt-4 mt-2 border-t border-white/10">
-              <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest block mb-3">Featured Speakers</span>
-              <div className="space-y-3">
-                {session.speakers.map((sp, i) => (
-                  <div key={i} className="group/sp">
-                    <p className="text-xs font-black text-white group-hover/sp:text-indigo-300 transition-colors">{sp.name}</p>
-                    <p className="text-[10px] text-slate-400 leading-tight font-medium">{sp.title}</p>
-                    <p className="text-[10px] text-indigo-400/80 font-black tracking-tight">{sp.company}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
         <div className={`absolute top-6 w-3 h-3 bg-slate-900 border-t border-l border-white/20 rotate-45 ${showOnLeft ? '-right-1.5 rotate-[135deg]' : '-left-1.5 -rotate-45'}`}></div>
       </div>
