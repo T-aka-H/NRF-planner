@@ -210,7 +210,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     if (loading) return <div className="h-full flex items-center justify-center"><Loader2 className="animate-spin text-indigo-600" /></div>;
 
     return (
-        <div className="h-full flex flex-col bg-slate-50 overflow-hidden text-slate-900">
+        <div className="h-screen flex flex-col bg-slate-50 overflow-hidden text-slate-900">
             {/* Admin Header */}
             <div className="bg-slate-900 text-white px-6 py-4 flex flex-col md:flex-row md:items-center justify-between shrink-0 gap-4">
                 <div className="flex items-center gap-4">
