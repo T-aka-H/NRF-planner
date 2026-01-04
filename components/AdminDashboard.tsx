@@ -138,6 +138,14 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         }
     };
 
+    const scrollToVenue = (location: string) => {
+        if (!gridScrollRef.current) return;
+        const targetColumn = gridScrollRef.current.querySelector(`[data-location="${location}"]`);
+        if (targetColumn) {
+            targetColumn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }
+    };
+
     const handleExportUser = () => {
         if (!selectedUserEmail) return;
         const myPlan = userSessions.filter(s => s.isSelected || s.isInterested);
@@ -238,18 +246,37 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
             </div>
 
             <div className="flex-1 flex flex-col p-6 overflow-hidden">
-                {/* Days Tab */}
-                <div className="flex justify-start mb-4 shrink-0">
-                    <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
-                        {days.map(day => (
-                            <button
-                                key={day}
-                                onClick={() => setSelectedDay(day)}
-                                className={`px-6 py-3 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedDay === day ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                {day.toUpperCase()}
-                            </button>
-                        ))}
+                {/* Days Tab & Jump Buttons */}
+                <div className="flex flex-col gap-2 mb-4 shrink-0">
+                    <div className="flex justify-start">
+                        <div className="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-100">
+                            {days.map(day => (
+                                <button
+                                    key={day}
+                                    onClick={() => setSelectedDay(day)}
+                                    className={`px-6 py-3 rounded-xl text-xs font-black transition-all whitespace-nowrap ${selectedDay === day ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                                >
+                                    {day.toUpperCase()}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Jump to Venue Buttons */}
+                    <div className="flex items-center gap-2 overflow-x-auto pb-2 scroll-smooth no-scrollbar">
+                        <div className="flex items-center gap-1.5 bg-indigo-50/50 px-3 py-2 rounded-xl border border-indigo-100 min-w-max">
+                            <MapPin size={12} className="text-indigo-600" />
+                            <span className="text-[10px] font-black text-indigo-700 uppercase tracking-widest mr-2">Jump to Venue:</span>
+                            {locations.map(loc => (
+                                <button
+                                    key={loc}
+                                    onClick={() => scrollToVenue(loc)}
+                                    className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-[9px] font-black text-slate-600 hover:border-indigo-400 hover:text-indigo-600 transition-all shadow-sm"
+                                >
+                                    {loc.replace('Exhibitor Big Ideas Stage', 'Stage').replace('Javits North, Level 4,', '').trim()}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
@@ -312,6 +339,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                                 {locations.map((location) => (
                                     <div
                                         key={location}
+                                        data-location={location}
                                         className="h-16 flex items-center justify-center px-4 border-r border-slate-100 bg-white/50"
                                         style={{ width: `${COLUMN_WIDTH}px` }}
                                     >
@@ -349,7 +377,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                                             return (
                                                 <div
                                                     key={session.id}
-                                                    className={`absolute left-2 right-2 transition-all duration-300 z-10 ${isActive ? 'opacity-100 z-[120]' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'}`}
+                                                    className={`absolute left-2 right-2 transition-all duration-300 ${isActive ? 'opacity-100 z-[120]' : 'opacity-30 hover:opacity-100 grayscale hover:grayscale-0'} z-10 hover:z-[150]`}
                                                     style={{ top: `${top}px`, height: `${height}px` }}
                                                 >
                                                     <SessionCard
