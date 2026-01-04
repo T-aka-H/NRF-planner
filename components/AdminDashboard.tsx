@@ -331,7 +331,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     <div
                         ref={gridScrollRef}
                         onScroll={handleGridScroll}
-                        className="flex-1 overflow-auto relative scroll-smooth scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-transparent z-10"
+                        className="flex-1 overflow-auto relative scroll-smooth z-10"
                     >
                         <div className="min-w-max relative">
                             {/* Header Row */}
