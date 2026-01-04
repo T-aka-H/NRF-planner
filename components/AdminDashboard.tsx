@@ -335,7 +335,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     >
                         <div className="min-w-max relative">
                             {/* Header Row */}
-                            <div className="sticky top-0 z-[115] flex bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+                            <div className="sticky top-0 z-[200] flex bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
                                 {locations.map((location) => (
                                     <div
                                         key={location}
