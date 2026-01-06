@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { supabase, fetchSessionResources, saveSessionResource, getSessionKey } from '../lib/supabase';
 import { MASTER_SESSIONS } from '../constants';
-import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown, Link, Mic, BrainCircuit, X, Save } from 'lucide-react';
+import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown, Link, Mic, BrainCircuit, X, Save, Image as ImageIcon } from 'lucide-react';
 import SessionCard from './SessionCard';
 import { SessionResource } from '../types';
 import * as XLSX from 'https://esm.sh/xlsx';
+import ExcelJS from 'exceljs';
+import html2canvas from 'html2canvas';
 
 // Constants reused from index.tsx
 const PIXELS_PER_MINUTE = 3.5;
@@ -41,8 +43,12 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     const [resourceForm, setResourceForm] = useState({ audio_url: '', notebook_url: '', mindmap_url: '' });
     const [savingResource, setSavingResource] = useState(false);
 
+    // Export State
+    const [isExporting, setIsExporting] = useState(false);
+
     const gridScrollRef = useRef<HTMLDivElement>(null);
     const timeColumnRef = useRef<HTMLDivElement>(null);
+    const gridContainerRef = useRef<HTMLDivElement>(null);
 
     const days = ['Sunday', 'Monday', 'Tuesday'];
 
@@ -168,6 +174,114 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         XLSX.writeFile(wb, `NRF2026_${selectedUserEmail}_Schedule.xlsx`);
     };
 
+    const exportToExcelAsImage = async () => {
+        if (!gridContainerRef.current || isExporting) return;
+        setIsExporting(true);
+
+        const scrollContainer = gridScrollRef.current;
+        const oldScrollLeft = scrollContainer?.scrollLeft || 0;
+        const oldScrollTop = scrollContainer?.scrollTop || 0;
+
+        if (scrollContainer) {
+            scrollContainer.scrollLeft = 0;
+            scrollContainer.scrollTop = 0;
+        }
+
+        // Wait a bit for scroll to finish
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        try {
+            if (scrollContainer && timeColumnRef.current) {
+                // Force expand to capture full content
+                scrollContainer.style.overflow = 'visible';
+                scrollContainer.style.height = 'auto';
+                scrollContainer.style.flex = 'none';
+
+                if (timeColumnRef.current) {
+                    timeColumnRef.current.style.height = 'auto';
+                    timeColumnRef.current.style.overflow = 'visible';
+                    timeColumnRef.current.style.flex = 'none';
+                }
+
+                // Also expand the parent gridContainerRef
+                gridContainerRef.current.style.height = 'auto';
+                gridContainerRef.current.style.overflow = 'visible';
+                gridContainerRef.current.style.width = 'max-content';
+            }
+
+            const canvas = await html2canvas(gridContainerRef.current, {
+                scale: 1.5, // Better quality
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+                // Increase dimensions to fit everything
+                width: gridContainerRef.current.scrollWidth,
+                height: gridContainerRef.current.scrollHeight,
+                windowWidth: gridContainerRef.current.scrollWidth + 100,
+                windowHeight: gridContainerRef.current.scrollHeight + 100,
+            });
+
+            // Restore styles
+            if (scrollContainer) {
+                scrollContainer.style.overflow = '';
+                scrollContainer.style.height = '';
+                scrollContainer.style.flex = '';
+                scrollContainer.scrollLeft = oldScrollLeft;
+                scrollContainer.scrollTop = oldScrollTop;
+            }
+            if (timeColumnRef.current) {
+                timeColumnRef.current.style.height = '';
+                timeColumnRef.current.style.overflow = '';
+                timeColumnRef.current.style.flex = '';
+            }
+            if (gridContainerRef.current) {
+                gridContainerRef.current.style.height = '';
+                gridContainerRef.current.style.overflow = '';
+                gridContainerRef.current.style.width = '';
+            }
+
+            const imageBase64 = canvas.toDataURL('image/png');
+            const workbook = new ExcelJS.Workbook();
+            const sheet = workbook.addWorksheet('Schedule Visual');
+            const imageId = workbook.addImage({ base64: imageBase64, extension: 'png' });
+
+            // Add image to sheet
+            sheet.addImage(imageId, {
+                tl: { col: 0, row: 0 },
+                ext: { width: canvas.width / 1.5, height: canvas.height / 1.5 }
+            });
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `TripSync_Admin_${selectedDay}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            link.click();
+
+        } catch (error) {
+            console.error('Export failed:', error);
+            alert('Export failed. See console.');
+        } finally {
+            // Safe restore in case of error
+            if (scrollContainer) {
+                scrollContainer.style.overflow = '';
+                scrollContainer.style.height = '';
+                scrollContainer.style.flex = '';
+            }
+            if (timeColumnRef.current) {
+                timeColumnRef.current.style.height = '';
+                timeColumnRef.current.style.overflow = '';
+                timeColumnRef.current.style.flex = '';
+            }
+            if (gridContainerRef.current) {
+                gridContainerRef.current.style.height = '';
+                gridContainerRef.current.style.overflow = '';
+                gridContainerRef.current.style.width = '';
+            }
+            setIsExporting(false);
+        }
+    };
+
     const handleSessionClick = (sessionId: string) => {
         const session = MASTER_SESSIONS.find(s => s.id === sessionId);
         if (!session) return;
@@ -239,6 +353,15 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     </div>
 
+                    <button
+                        onClick={exportToExcelAsImage}
+                        disabled={isExporting}
+                        className={`bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors ${isExporting ? 'opacity-70 animate-pulse' : ''}`}
+                    >
+                        {isExporting ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
+                        EXPORT IMAGE XLS
+                    </button>
+
                     <button onClick={handleExportUser} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors">
                         <Download size={14} /> EXPORT USER
                     </button>
@@ -281,7 +404,10 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                 </div>
 
                 {/* Grid Container */}
-                <div className="flex-1 flex bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden relative">
+                <div
+                    ref={gridContainerRef}
+                    className="flex-1 flex bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden relative"
+                >
                     {/* Time Column */}
                     <div className="flex flex-col shrink-0 border-r border-slate-200 bg-slate-50 z-[120]" style={{ width: `${TIME_COL_WIDTH}px` }}>
                         <div className="h-16 flex items-center justify-center bg-slate-100 border-b border-slate-200">
