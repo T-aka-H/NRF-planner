@@ -152,29 +152,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         }
     };
 
-    const handleExportUser = () => {
-        if (!selectedUserEmail) return;
-        const myPlan = userSessions.filter(s => s.isSelected || s.isInterested);
-        if (myPlan.length === 0) {
-            alert("This user has no saved sessions.");
-            return;
-        }
-
-        // Simple Excel Export for selected user
-        const ws = XLSX.utils.json_to_sheet(myPlan.map(s => ({
-            Day: s.day,
-            Time: `${s.time_start} - ${s.time_end}`,
-            Title: s.title,
-            Location: s.location,
-            Type: s.type,
-            Status: s.isSelected ? 'MUST GO' : 'Interested'
-        })));
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "User Schedule");
-        XLSX.writeFile(wb, `NRF2026_${selectedUserEmail}_Schedule.xlsx`);
-    };
-
-    const exportToExcelAsImage = async () => {
+    const handleExportUser = async () => {
         if (!gridContainerRef.current || isExporting) return;
         setIsExporting(true);
 
@@ -182,62 +160,61 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         const oldScrollLeft = scrollContainer?.scrollLeft || 0;
         const oldScrollTop = scrollContainer?.scrollTop || 0;
 
+        // Reset scroll to ensure consistent capture start point
         if (scrollContainer) {
             scrollContainer.scrollLeft = 0;
             scrollContainer.scrollTop = 0;
         }
 
         // Wait a bit for scroll to finish
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 600));
 
         try {
-            if (scrollContainer && timeColumnRef.current) {
-                // Force expand to capture full content
-                scrollContainer.style.overflow = 'visible';
-                scrollContainer.style.height = 'auto';
-                scrollContainer.style.flex = 'none';
-
-                if (timeColumnRef.current) {
-                    timeColumnRef.current.style.height = 'auto';
-                    timeColumnRef.current.style.overflow = 'visible';
-                    timeColumnRef.current.style.flex = 'none';
-                }
-
-                // Also expand the parent gridContainerRef
-                gridContainerRef.current.style.height = 'auto';
-                gridContainerRef.current.style.overflow = 'visible';
-                gridContainerRef.current.style.width = 'max-content';
-            }
+            // Calculate total dimensions based on content
+            // Assuming scrollContainer contains the grid content
+            const contentWidth = (locations.length * COLUMN_WIDTH) + TIME_COL_WIDTH + 100;
+            const contentHeight = (timeMarkers.length * 30 * PIXELS_PER_MINUTE) + 200; // + header buffer
 
             const canvas = await html2canvas(gridContainerRef.current, {
                 scale: 1.5, // Better quality
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff',
-                // Increase dimensions to fit everything
-                width: gridContainerRef.current.scrollWidth,
-                height: gridContainerRef.current.scrollHeight,
-                windowWidth: gridContainerRef.current.scrollWidth + 100,
-                windowHeight: gridContainerRef.current.scrollHeight + 100,
+                width: contentWidth,
+                height: contentHeight,
+                windowWidth: contentWidth,
+                windowHeight: contentHeight,
+                onclone: (clonedDoc) => {
+                    const clonedGridContainer = clonedDoc.querySelector('[data-capture-target="grid-container"]') as HTMLElement;
+                    const clonedScrollContainer = clonedDoc.querySelector('[data-capture-target="grid-scroll"]') as HTMLElement;
+                    const clonedTimeColumn = clonedDoc.querySelector('[data-capture-target="time-column"]') as HTMLElement;
+
+                    if (clonedGridContainer) {
+                        clonedGridContainer.style.height = 'auto';
+                        clonedGridContainer.style.width = 'max-content';
+                        clonedGridContainer.style.overflow = 'visible';
+                        clonedGridContainer.style.position = 'absolute'; // Prevent layout constraints
+                        clonedGridContainer.style.top = '0';
+                        clonedGridContainer.style.left = '0';
+                    }
+                    if (clonedScrollContainer) {
+                        clonedScrollContainer.style.overflow = 'visible';
+                        clonedScrollContainer.style.height = 'auto';
+                        clonedScrollContainer.style.width = 'auto';
+                        clonedScrollContainer.style.flex = 'none';
+                    }
+                    if (clonedTimeColumn) {
+                        clonedTimeColumn.style.height = 'auto';
+                        clonedTimeColumn.style.overflow = 'visible';
+                        clonedTimeColumn.style.flex = 'none';
+                    }
+                }
             });
 
-            // Restore styles
+            // Restore styles (scroll position)
             if (scrollContainer) {
-                scrollContainer.style.overflow = '';
-                scrollContainer.style.height = '';
-                scrollContainer.style.flex = '';
                 scrollContainer.scrollLeft = oldScrollLeft;
                 scrollContainer.scrollTop = oldScrollTop;
-            }
-            if (timeColumnRef.current) {
-                timeColumnRef.current.style.height = '';
-                timeColumnRef.current.style.overflow = '';
-                timeColumnRef.current.style.flex = '';
-            }
-            if (gridContainerRef.current) {
-                gridContainerRef.current.style.height = '';
-                gridContainerRef.current.style.overflow = '';
-                gridContainerRef.current.style.width = '';
             }
 
             const imageBase64 = canvas.toDataURL('image/png');
@@ -262,22 +239,6 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
             console.error('Export failed:', error);
             alert('Export failed. See console.');
         } finally {
-            // Safe restore in case of error
-            if (scrollContainer) {
-                scrollContainer.style.overflow = '';
-                scrollContainer.style.height = '';
-                scrollContainer.style.flex = '';
-            }
-            if (timeColumnRef.current) {
-                timeColumnRef.current.style.height = '';
-                timeColumnRef.current.style.overflow = '';
-                timeColumnRef.current.style.flex = '';
-            }
-            if (gridContainerRef.current) {
-                gridContainerRef.current.style.height = '';
-                gridContainerRef.current.style.overflow = '';
-                gridContainerRef.current.style.width = '';
-            }
             setIsExporting(false);
         }
     };
@@ -354,17 +315,15 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     </div>
 
                     <button
-                        onClick={exportToExcelAsImage}
+                        onClick={handleExportUser}
                         disabled={isExporting}
                         className={`bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors ${isExporting ? 'opacity-70 animate-pulse' : ''}`}
                     >
-                        {isExporting ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
-                        EXPORT IMAGE XLS
+                        {isExporting ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                        EXPORT SCHEDULE
                     </button>
 
-                    <button onClick={handleExportUser} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors">
-                        <Download size={14} /> EXPORT USER
-                    </button>
+                    {/* Previous text export button removed */}
                 </div>
             </div>
 
@@ -406,10 +365,15 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                 {/* Grid Container */}
                 <div
                     ref={gridContainerRef}
+                    data-capture-target="grid-container"
                     className="flex-1 flex bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200 border border-slate-100 overflow-hidden relative"
                 >
                     {/* Time Column */}
-                    <div className="flex flex-col shrink-0 border-r border-slate-200 bg-slate-50 z-[120]" style={{ width: `${TIME_COL_WIDTH}px` }}>
+                    <div
+                        data-capture-target="time-column"
+                        className="flex flex-col shrink-0 border-r border-slate-200 bg-slate-50 z-[120]"
+                        style={{ width: `${TIME_COL_WIDTH}px` }}
+                    >
                         <div className="h-16 flex items-center justify-center bg-slate-100 border-b border-slate-200">
                             <Clock size={16} className="text-slate-400" />
                         </div>
@@ -457,6 +421,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     <div
                         ref={gridScrollRef}
                         onScroll={handleGridScroll}
+                        data-capture-target="grid-scroll"
                         className="flex-1 overflow-auto relative scroll-smooth z-10"
                     >
                         <div className="min-w-max relative">
