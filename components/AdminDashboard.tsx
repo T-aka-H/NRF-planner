@@ -159,32 +159,44 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         const scrollContainer = gridScrollRef.current;
 
         // Wait a bit for any pending renders
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 300));
 
         try {
-            // Calculate precise total dimensions
-            // Time Column + All Location Columns (fixed width)
+            // Precise total dimensions calculation
+            // Width: Time Column + (Number of Venues * Width per Venue)
             const totalWidth = TIME_COL_WIDTH + (locations.length * COLUMN_WIDTH);
 
-            // Header Height (64px) + Time Rows Height
-            // We adding a bit of buffer
+            // Height: Header (approx 64px) + (Number of Time Slots * Height per Slot)
+            // Add slight buffer (50px)
             const totalHeight = 64 + (timeMarkers.length * 30 * PIXELS_PER_MINUTE) + 50;
+
+            // Capture dimensions with safety buffer
+            const captureWidth = totalWidth + 100;
+            const captureHeight = totalHeight + 100;
 
             const canvas = await html2canvas(gridContainerRef.current, {
                 scale: 1.5,
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff',
-                width: totalWidth,
-                height: totalHeight,
-                windowWidth: totalWidth,
-                windowHeight: totalHeight,
+                width: captureWidth,
+                height: captureHeight,
+                windowWidth: captureWidth,
+                windowHeight: captureHeight,
                 onclone: (clonedDoc) => {
                     const clonedGridContainer = clonedDoc.querySelector('[data-capture-target="grid-container"]') as HTMLElement;
                     const clonedScrollContainer = clonedDoc.querySelector('[data-capture-target="grid-scroll"]') as HTMLElement;
                     const clonedTimeColumn = clonedDoc.querySelector('[data-capture-target="time-column"]') as HTMLElement;
 
-                    // Enforce full visibility on the outer container
+                    // Helper to force an element to expand fully
+                    const setFullSize = (el: HTMLElement, w?: number, h?: number) => {
+                        el.style.overflow = 'visible';
+                        // We use block to kill any flexbox shrinking, but sometimes we need flex for layout.
+                        // Here, we know the containers structure.
+                        // For the root, we might want to keep flex but turn off shrinking.
+                    };
+
+                    // 1. Force the Main Container to be full size
                     if (clonedGridContainer) {
                         clonedGridContainer.style.height = `${totalHeight}px`;
                         clonedGridContainer.style.width = `${totalWidth}px`;
@@ -192,26 +204,35 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         clonedGridContainer.style.position = 'absolute';
                         clonedGridContainer.style.top = '0';
                         clonedGridContainer.style.left = '0';
-                        clonedGridContainer.style.zIndex = '9999';
+                        clonedGridContainer.style.maxWidth = 'none';
+                        clonedGridContainer.style.maxHeight = 'none';
+                        // Ensure it stays a flex container so children sit side-by-side
+                        clonedGridContainer.style.display = 'flex';
                     }
 
-                    // Expand the scrollable area
-                    if (clonedScrollContainer) {
-                        clonedScrollContainer.style.overflow = 'visible';
-                        clonedScrollContainer.style.height = `${totalHeight}px`;
-                        clonedScrollContainer.style.width = `${totalWidth - TIME_COL_WIDTH}px`; // Remaining width
-                        clonedScrollContainer.style.flex = 'none';
-                        clonedScrollContainer.style.display = 'block'; // Remove flex constraints if any
-
-                        // Fix sticky header in the clone if necessary (sometimes sticky behaves weirdly in captures)
-                        // But usually sticky inside overflow:visible becomes static-like, which is good.
-                    }
-
-                    // Expand the time column
+                    // 2. Force the Time Column to be full height and fixed width
                     if (clonedTimeColumn) {
                         clonedTimeColumn.style.height = `${totalHeight}px`;
+                        clonedTimeColumn.style.width = `${TIME_COL_WIDTH}px`;
                         clonedTimeColumn.style.overflow = 'visible';
-                        clonedTimeColumn.style.flex = 'none';
+                        clonedTimeColumn.style.flex = 'none'; // Don't grow/shrink
+                    }
+
+                    // 3. Force the Grid Scroll Container to be full height and full remaining width
+                    if (clonedScrollContainer) {
+                        const gridWidth = locations.length * COLUMN_WIDTH;
+                        clonedScrollContainer.style.overflow = 'visible';
+                        clonedScrollContainer.style.height = `${totalHeight}px`;
+                        clonedScrollContainer.style.width = `${gridWidth}px`;
+                        clonedScrollContainer.style.flex = 'none';
+
+                        // Also ensure the inner wrapper (the one with min-w-max) is expanded
+                        const innerDiv = clonedScrollContainer.firstElementChild as HTMLElement;
+                        if (innerDiv) {
+                            innerDiv.style.width = `${gridWidth}px`;
+                            innerDiv.style.height = `${totalHeight}px`;
+                            innerDiv.style.minWidth = '0'; // Override Tailwind min-w-max if needed
+                        }
                     }
                 }
             });
@@ -221,12 +242,9 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
             const sheet = workbook.addWorksheet('Schedule Visual');
 
             // Add image to sheet
-            // Create an image ID
             const imageId = workbook.addImage({ base64: imageBase64, extension: 'png' });
 
-            // Calculate rough cell span based on pixels
-            // Excel default col width is ~8 chars (~64px), row height ~15pts (~20px)
-            // This is just for placement
+            // Place image
             sheet.addImage(imageId, {
                 tl: { col: 0, row: 0 },
                 ext: { width: canvas.width / 1.5, height: canvas.height / 1.5 }
@@ -323,11 +341,9 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         disabled={isExporting}
                         className={`bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors ${isExporting ? 'opacity-70 animate-pulse' : ''}`}
                     >
-                        {isExporting ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+                        {isExporting ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
                         EXPORT SCHEDULE
                     </button>
-
-                    {/* Previous text export button removed */}
                 </div>
             </div>
 
