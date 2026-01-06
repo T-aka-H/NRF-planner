@@ -157,72 +157,76 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         setIsExporting(true);
 
         const scrollContainer = gridScrollRef.current;
-        const oldScrollLeft = scrollContainer?.scrollLeft || 0;
-        const oldScrollTop = scrollContainer?.scrollTop || 0;
 
-        // Reset scroll to ensure consistent capture start point
-        if (scrollContainer) {
-            scrollContainer.scrollLeft = 0;
-            scrollContainer.scrollTop = 0;
-        }
-
-        // Wait a bit for scroll to finish
-        await new Promise(resolve => setTimeout(resolve, 600));
+        // Wait a bit for any pending renders
+        await new Promise(resolve => setTimeout(resolve, 200));
 
         try {
-            // Calculate total dimensions based on content
-            // Assuming scrollContainer contains the grid content
-            const contentWidth = (locations.length * COLUMN_WIDTH) + TIME_COL_WIDTH + 100;
-            const contentHeight = (timeMarkers.length * 30 * PIXELS_PER_MINUTE) + 200; // + header buffer
+            // Calculate precise total dimensions
+            // Time Column + All Location Columns (fixed width)
+            const totalWidth = TIME_COL_WIDTH + (locations.length * COLUMN_WIDTH);
+
+            // Header Height (64px) + Time Rows Height
+            // We adding a bit of buffer
+            const totalHeight = 64 + (timeMarkers.length * 30 * PIXELS_PER_MINUTE) + 50;
 
             const canvas = await html2canvas(gridContainerRef.current, {
-                scale: 1.5, // Better quality
+                scale: 1.5,
                 useCORS: true,
                 logging: false,
                 backgroundColor: '#ffffff',
-                width: contentWidth,
-                height: contentHeight,
-                windowWidth: contentWidth,
-                windowHeight: contentHeight,
+                width: totalWidth,
+                height: totalHeight,
+                windowWidth: totalWidth,
+                windowHeight: totalHeight,
                 onclone: (clonedDoc) => {
                     const clonedGridContainer = clonedDoc.querySelector('[data-capture-target="grid-container"]') as HTMLElement;
                     const clonedScrollContainer = clonedDoc.querySelector('[data-capture-target="grid-scroll"]') as HTMLElement;
                     const clonedTimeColumn = clonedDoc.querySelector('[data-capture-target="time-column"]') as HTMLElement;
 
+                    // Enforce full visibility on the outer container
                     if (clonedGridContainer) {
-                        clonedGridContainer.style.height = 'auto';
-                        clonedGridContainer.style.width = 'max-content';
+                        clonedGridContainer.style.height = `${totalHeight}px`;
+                        clonedGridContainer.style.width = `${totalWidth}px`;
                         clonedGridContainer.style.overflow = 'visible';
-                        clonedGridContainer.style.position = 'absolute'; // Prevent layout constraints
+                        clonedGridContainer.style.position = 'absolute';
                         clonedGridContainer.style.top = '0';
                         clonedGridContainer.style.left = '0';
+                        clonedGridContainer.style.zIndex = '9999';
                     }
+
+                    // Expand the scrollable area
                     if (clonedScrollContainer) {
                         clonedScrollContainer.style.overflow = 'visible';
-                        clonedScrollContainer.style.height = 'auto';
-                        clonedScrollContainer.style.width = 'auto';
+                        clonedScrollContainer.style.height = `${totalHeight}px`;
+                        clonedScrollContainer.style.width = `${totalWidth - TIME_COL_WIDTH}px`; // Remaining width
                         clonedScrollContainer.style.flex = 'none';
+                        clonedScrollContainer.style.display = 'block'; // Remove flex constraints if any
+
+                        // Fix sticky header in the clone if necessary (sometimes sticky behaves weirdly in captures)
+                        // But usually sticky inside overflow:visible becomes static-like, which is good.
                     }
+
+                    // Expand the time column
                     if (clonedTimeColumn) {
-                        clonedTimeColumn.style.height = 'auto';
+                        clonedTimeColumn.style.height = `${totalHeight}px`;
                         clonedTimeColumn.style.overflow = 'visible';
                         clonedTimeColumn.style.flex = 'none';
                     }
                 }
             });
 
-            // Restore styles (scroll position)
-            if (scrollContainer) {
-                scrollContainer.scrollLeft = oldScrollLeft;
-                scrollContainer.scrollTop = oldScrollTop;
-            }
-
             const imageBase64 = canvas.toDataURL('image/png');
             const workbook = new ExcelJS.Workbook();
             const sheet = workbook.addWorksheet('Schedule Visual');
-            const imageId = workbook.addImage({ base64: imageBase64, extension: 'png' });
 
             // Add image to sheet
+            // Create an image ID
+            const imageId = workbook.addImage({ base64: imageBase64, extension: 'png' });
+
+            // Calculate rough cell span based on pixels
+            // Excel default col width is ~8 chars (~64px), row height ~15pts (~20px)
+            // This is just for placement
             sheet.addImage(imageId, {
                 tl: { col: 0, row: 0 },
                 ext: { width: canvas.width / 1.5, height: canvas.height / 1.5 }
@@ -237,7 +241,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
 
         } catch (error) {
             console.error('Export failed:', error);
-            alert('Export failed. See console.');
+            alert('Export failed. Please try again.');
         } finally {
             setIsExporting(false);
         }
