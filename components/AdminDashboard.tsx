@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { supabase, fetchSessionResources, saveSessionResource, getSessionKey } from '../lib/supabase';
 import { MASTER_SESSIONS } from '../constants';
-import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown, Link, Mic, BrainCircuit, X, Save, Image as ImageIcon } from 'lucide-react';
+import { Download, Search, User, ArrowLeft, Loader2, Calendar, Star, Heart, Clock, MapPin, ChevronDown, Link, Mic, BrainCircuit, X, Save, Image as ImageIcon, Plus, Edit2, PenTool } from 'lucide-react';
 import SessionCard from './SessionCard';
+import CustomEventModal from './CustomEventModal';
 import { SessionResource } from '../types';
 import * as XLSX from 'https://esm.sh/xlsx';
 import ExcelJS from 'exceljs';
@@ -28,6 +29,17 @@ type UserScheduleRow = {
     updated_at: string;
 };
 
+type CustomEvent = {
+    id: string;
+    user_email: string;
+    title: string;
+    description?: string;
+    day: string;
+    time_start: string;
+    time_end: string;
+    created_at: string;
+};
+
 const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     const [loading, setLoading] = useState(true);
     const [rawData, setRawData] = useState<UserScheduleRow[]>([]);
@@ -43,6 +55,12 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     const [resourceForm, setResourceForm] = useState({ audio_url: '', notebook_url: '', mindmap_url: '' });
     const [savingResource, setSavingResource] = useState(false);
 
+    // Custom Events State
+    const [customEvents, setCustomEvents] = useState<CustomEvent[]>([]);
+    const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+    const [editingCustomEvent, setEditingCustomEvent] = useState<CustomEvent | null>(null);
+    const [newCustomEventTime, setNewCustomEventTime] = useState<{ start: string; end: string } | undefined>(undefined);
+
     // Export State
     const [isExporting, setIsExporting] = useState(false);
 
@@ -52,6 +70,7 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
 
     const days = ['Sunday', 'Monday', 'Tuesday'];
 
+    // Data Fetching
     useEffect(() => {
         const fetchAdminData = async () => {
             try {
@@ -72,6 +91,25 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
 
         fetchAdminData();
     }, []);
+
+    // Fetch Custom Events when User/Day changes
+    useEffect(() => {
+        const fetchCustomEvents = async () => {
+            if (!selectedUserEmail) return;
+            try {
+                const { data, error } = await supabase
+                    .from('user_custom_events')
+                    .select('*')
+                    .eq('user_email', selectedUserEmail);
+
+                if (error) throw error;
+                setCustomEvents(data || []);
+            } catch (err) {
+                console.error('Error fetching custom events:', err);
+            }
+        };
+        fetchCustomEvents();
+    }, [selectedUserEmail]);
 
     // Unique Users List
     const users = useMemo(() => {
@@ -111,6 +149,10 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
     const filteredSessions = useMemo(() => {
         return userSessions.filter(s => s.day === selectedDay);
     }, [userSessions, selectedDay]);
+
+    const filteredCustomEvents = useMemo(() => {
+        return customEvents.filter(e => e.day === selectedDay);
+    }, [customEvents, selectedDay]);
 
     // Locations for Columns
     const locations = useMemo(() => {
@@ -152,6 +194,84 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
         }
     };
 
+    // --- Custom Event Handlers ---
+
+    const handleOpenAddCustomEvent = (time?: string) => {
+        setEditingCustomEvent(null);
+        if (time) {
+            const [h, m] = time.split(':').map(Number);
+            const endH = h + 1;
+            const endM = m;
+            setNewCustomEventTime({
+                start: time,
+                end: `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`
+            });
+        } else {
+            setNewCustomEventTime(undefined);
+        }
+        setIsCustomModalOpen(true);
+    };
+
+    const handleEditCustomEvent = (event: CustomEvent) => {
+        setEditingCustomEvent(event);
+        setNewCustomEventTime(undefined);
+        setIsCustomModalOpen(true);
+    };
+
+    const handleSaveCustomEvent = async (eventData: { title: string; description: string; time_start: string; time_end: string }) => {
+        if (!selectedUserEmail) return;
+
+        const payload = {
+            user_email: selectedUserEmail,
+            day: selectedDay,
+            ...eventData
+        };
+
+        try {
+            if (editingCustomEvent) {
+                // Update
+                const { error } = await supabase
+                    .from('user_custom_events')
+                    .update(payload)
+                    .eq('id', editingCustomEvent.id);
+                if (error) throw error;
+
+                setCustomEvents(prev => prev.map(e => e.id === editingCustomEvent.id ? { ...e, ...payload } : e));
+            } else {
+                // Insert
+                const { data, error } = await supabase
+                    .from('user_custom_events')
+                    .insert([payload])
+                    .select();
+                if (error) throw error;
+                if (data) setCustomEvents(prev => [...prev, data[0]]);
+            }
+        } catch (err) {
+            console.error('Error saving custom event:', err);
+            alert('Failed to save event');
+        }
+    };
+
+    const handleDeleteCustomEvent = async () => {
+        if (!editingCustomEvent) return;
+        if (!confirm('Are you sure you want to delete this event?')) return;
+
+        try {
+            const { error } = await supabase
+                .from('user_custom_events')
+                .delete()
+                .eq('id', editingCustomEvent.id);
+            if (error) throw error;
+
+            setCustomEvents(prev => prev.filter(e => e.id !== editingCustomEvent.id));
+        } catch (err) {
+            console.error('Error deleting custom event:', err);
+            alert('Failed to delete event');
+        }
+    };
+
+    // --- Export Logic ---
+
     const handleExportUser = async () => {
         if (!gridContainerRef.current || isExporting) return;
         setIsExporting(true);
@@ -163,11 +283,11 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
 
         try {
             // Precise total dimensions calculation
-            // Width: Time Column + (Number of Venues * Width per Venue)
-            const totalWidth = TIME_COL_WIDTH + (locations.length * COLUMN_WIDTH);
+            // Width: Time Column + Custom Column + (Number of Venues * Width per Venue)
+            // Note: Add extra width for the Custom Column (COLUMN_WIDTH)
+            const totalWidth = TIME_COL_WIDTH + COLUMN_WIDTH + (locations.length * COLUMN_WIDTH);
 
-            // Height: Header (approx 64px) + (Number of Time Slots * Height per Slot)
-            // Add slight buffer (50px)
+            // Height
             const totalHeight = 64 + (timeMarkers.length * 30 * PIXELS_PER_MINUTE) + 50;
 
             // Capture dimensions with safety buffer
@@ -188,15 +308,6 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     const clonedScrollContainer = clonedDoc.querySelector('[data-capture-target="grid-scroll"]') as HTMLElement;
                     const clonedTimeColumn = clonedDoc.querySelector('[data-capture-target="time-column"]') as HTMLElement;
 
-                    // Helper to force an element to expand fully
-                    const setFullSize = (el: HTMLElement, w?: number, h?: number) => {
-                        el.style.overflow = 'visible';
-                        // We use block to kill any flexbox shrinking, but sometimes we need flex for layout.
-                        // Here, we know the containers structure.
-                        // For the root, we might want to keep flex but turn off shrinking.
-                    };
-
-                    // 1. Force the Main Container to be full size
                     if (clonedGridContainer) {
                         clonedGridContainer.style.height = `${totalHeight}px`;
                         clonedGridContainer.style.width = `${totalWidth}px`;
@@ -206,32 +317,29 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         clonedGridContainer.style.left = '0';
                         clonedGridContainer.style.maxWidth = 'none';
                         clonedGridContainer.style.maxHeight = 'none';
-                        // Ensure it stays a flex container so children sit side-by-side
                         clonedGridContainer.style.display = 'flex';
                     }
 
-                    // 2. Force the Time Column to be full height and fixed width
                     if (clonedTimeColumn) {
                         clonedTimeColumn.style.height = `${totalHeight}px`;
                         clonedTimeColumn.style.width = `${TIME_COL_WIDTH}px`;
                         clonedTimeColumn.style.overflow = 'visible';
-                        clonedTimeColumn.style.flex = 'none'; // Don't grow/shrink
+                        clonedTimeColumn.style.flex = 'none';
                     }
 
-                    // 3. Force the Grid Scroll Container to be full height and full remaining width
                     if (clonedScrollContainer) {
-                        const gridWidth = locations.length * COLUMN_WIDTH;
+                        // Include Custom Column in calculation
+                        const gridWidth = COLUMN_WIDTH + (locations.length * COLUMN_WIDTH);
                         clonedScrollContainer.style.overflow = 'visible';
                         clonedScrollContainer.style.height = `${totalHeight}px`;
                         clonedScrollContainer.style.width = `${gridWidth}px`;
                         clonedScrollContainer.style.flex = 'none';
 
-                        // Also ensure the inner wrapper (the one with min-w-max) is expanded
                         const innerDiv = clonedScrollContainer.firstElementChild as HTMLElement;
                         if (innerDiv) {
                             innerDiv.style.width = `${gridWidth}px`;
                             innerDiv.style.height = `${totalHeight}px`;
-                            innerDiv.style.minWidth = '0'; // Override Tailwind min-w-max if needed
+                            innerDiv.style.minWidth = '0';
                         }
                     }
                 }
@@ -290,7 +398,6 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                 ...resourceForm
             });
 
-            // Update local state
             setResources(prev => ({
                 ...prev,
                 [key]: saved
@@ -408,7 +515,6 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                                         if (!s.isSelected && !s.isInterested) return false;
                                         const start = timeToMinutes(s.time_start);
                                         const end = timeToMinutes(s.time_end);
-                                        // Session covers this slot if it starts before slot ends and ends after slot starts
                                         return start < nextTimeInMin && end > timeInMin;
                                     });
 
@@ -447,6 +553,16 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                         <div className="min-w-max relative">
                             {/* Header Row */}
                             <div className="sticky top-0 z-[200] flex bg-white/95 backdrop-blur border-b border-slate-200 shadow-sm">
+                                {/* Custom Column Header */}
+                                <div
+                                    className="h-16 flex items-center justify-center px-4 border-r border-slate-100 bg-indigo-50/50"
+                                    style={{ width: `${COLUMN_WIDTH}px` }}
+                                >
+                                    <h3 className="text-[10px] font-black text-indigo-800 text-center uppercase tracking-widest leading-tight flex items-center gap-2">
+                                        <PenTool size={14} /> Free Write
+                                    </h3>
+                                </div>
+
                                 {locations.map((location) => (
                                     <div
                                         key={location}
@@ -461,6 +577,59 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
 
                             {/* Columns */}
                             <div className="flex relative">
+                                {/* Custom Column */}
+                                <div
+                                    className="relative border-r border-slate-100 group/column hover:z-[110] bg-slate-50/30"
+                                    style={{ width: `${COLUMN_WIDTH}px`, height: `${(timeMarkers.length) * 30 * PIXELS_PER_MINUTE}px` }}
+                                >
+                                    {/* Grid Lines & Click Handlers for Custom Column */}
+                                    {timeMarkers.map((time, i) => (
+                                        <div
+                                            key={time}
+                                            onClick={() => handleOpenAddCustomEvent(time)}
+                                            className="absolute left-0 right-0 border-b border-slate-200/30 cursor-pointer hover:bg-indigo-50/50 transition-colors group/cell"
+                                            style={{ top: `${i * 30 * PIXELS_PER_MINUTE}px`, height: `${30 * PIXELS_PER_MINUTE}px` }}
+                                        >
+                                            <div className="hidden group-hover/cell:flex items-center justify-center h-full opacity-50">
+                                                <Plus size={16} className="text-indigo-400" />
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                    {/* Render Custom Events */}
+                                    {filteredCustomEvents.map(event => {
+                                        const startMin = timeToMinutes(event.time_start);
+                                        const endMin = timeToMinutes(event.time_end);
+                                        const duration = endMin - startMin;
+                                        const top = (startMin - DAY_START_MINUTES) * PIXELS_PER_MINUTE;
+                                        const height = Math.max(duration * PIXELS_PER_MINUTE, 45);
+
+                                        return (
+                                            <div
+                                                key={event.id}
+                                                onClick={(e) => { e.stopPropagation(); handleEditCustomEvent(event); }}
+                                                className="absolute left-2 right-2 rounded-xl bg-white border border-indigo-200 shadow-sm hover:shadow-md transition-all p-3 cursor-pointer z-10 hover:z-[120] group/card overflow-hidden"
+                                                style={{ top: `${top}px`, height: `${height}px` }}
+                                            >
+                                                <div className="flex justify-between items-start gap-2">
+                                                    <h4 className="font-bold text-xs text-indigo-900 leading-tight line-clamp-2">{event.title}</h4>
+                                                    <span className="p-1 rounded-full bg-indigo-50 text-indigo-400 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                                        <Edit2 size={10} />
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-1 mt-1 text-[10px] font-medium text-slate-500">
+                                                    <Clock size={10} />
+                                                    {event.time_start} - {event.time_end}
+                                                </div>
+                                                {event.description && (
+                                                    <p className="mt-2 text-[10px] text-slate-500 leading-relaxed line-clamp-3">{event.description}</p>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Venue Columns */}
                                 {locations.map((location, colIdx) => (
                                     <div
                                         key={location}
@@ -516,6 +685,17 @@ const AdminDashboard = ({ onBack }: { onBack: () => void }) => {
                     </div>
                 </div>
             </div>
+
+            {/* Custom Event Modal */}
+            <CustomEventModal
+                isOpen={isCustomModalOpen}
+                onClose={() => setIsCustomModalOpen(false)}
+                onSave={handleSaveCustomEvent}
+                onDelete={editingCustomEvent ? handleDeleteCustomEvent : undefined}
+                initialData={editingCustomEvent}
+                defaultTime={newCustomEventTime}
+            />
+
             {/* Resource Editor Modal */}
             {editingSession && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
